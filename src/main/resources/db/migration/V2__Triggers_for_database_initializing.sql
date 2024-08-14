@@ -77,7 +77,7 @@ DELIMITER $$
         SELECT id INTO member_id FROM group_member WHERE code = NEW.code;
 
         IF member_id IS NOT null THEN
-        UPDATE group_member SET pupil_id = NEW.id;
+        UPDATE group_member SET pupil_id = NEW.id WHERE id = member_id;
     END IF;
     END$$
 
