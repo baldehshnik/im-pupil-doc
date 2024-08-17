@@ -34,16 +34,16 @@ public class EducationInstitutionService {
 
     public List<InstitutionEvent> getInstitutionEventsOfEducationInstitutionByAbbreviation(
             String institutionAbbreviation) {
-        return institutionEventRepository.
-                findByInstitutionId(
+        return institutionEventRepository
+                .findByInstitutionId(
                         educationalInstitutionRepository.findByAbbreviation(institutionAbbreviation).getId()
                 );
     }
 
     public List<InstitutionEvent> getInstitutionEventsOfEducationInstitutionByName(
             String institutionName) {
-        return institutionEventRepository.
-                findByInstitutionId(
+        return institutionEventRepository
+                .findByInstitutionId(
                         educationalInstitutionRepository.findByName(institutionName).getId()
                 );
     }
