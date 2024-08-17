@@ -16,15 +16,15 @@ public class InstitutionEventDto implements Serializable {
     @Size(max = 32)
     @NotEmpty(message = "Title should be not empty")
     @NotBlank(message = "Title should be not blank")
-    private final String title;
+    private String title;
     @NotNull
-    private final String description;
+    private String description;
     @NotNull
-    private final String image;
+    private String image;
     @NotNull
-    private final Integer duration;
+    private Integer duration;
     @NotNull
-    private final Integer type;
+    private Integer type;
 
     public InstitutionEventDto(String title, String description, String image, Integer duration, Integer type) {
         this.title = title;
@@ -33,6 +33,8 @@ public class InstitutionEventDto implements Serializable {
         this.duration = duration;
         this.type = type;
     }
+
+    public InstitutionEventDto() {}
 
     public String getTitle() {
         return title;
