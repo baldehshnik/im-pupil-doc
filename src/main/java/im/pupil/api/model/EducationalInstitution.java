@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "educational_intitution", schema = "im_pupil", uniqueConstraints = {
+@Table(name = "educational_institution", schema = "im_pupil", uniqueConstraints = {
         @UniqueConstraint(name = "name", columnNames = {"name"})
 })
-public class EducationalIntitution {
+public class EducationalInstitution {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
@@ -83,4 +83,6 @@ public class EducationalIntitution {
         this.phone = phone;
     }
 
+    public EducationalInstitution() {
+    }
 }

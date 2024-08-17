@@ -41,7 +41,7 @@ public class Pupil {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
-    private EducationalIntitution institution;
+    private EducationalInstitution institution;
 
     public Integer getId() {
         return id;
@@ -83,11 +83,11 @@ public class Pupil {
         this.code = code;
     }
 
-    public EducationalIntitution getInstitution() {
+    public EducationalInstitution getInstitution() {
         return institution;
     }
 
-    public void setInstitution(EducationalIntitution institution) {
+    public void setInstitution(EducationalInstitution institution) {
         this.institution = institution;
     }
 

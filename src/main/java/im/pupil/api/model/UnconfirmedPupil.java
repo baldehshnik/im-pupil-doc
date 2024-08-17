@@ -44,7 +44,7 @@ public class UnconfirmedPupil {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
-    private EducationalIntitution institution;
+    private EducationalInstitution institution;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -98,11 +98,11 @@ public class UnconfirmedPupil {
         this.groupName = groupName;
     }
 
-    public EducationalIntitution getInstitution() {
+    public EducationalInstitution getInstitution() {
         return institution;
     }
 
-    public void setInstitution(EducationalIntitution institution) {
+    public void setInstitution(EducationalInstitution institution) {
         this.institution = institution;
     }
 

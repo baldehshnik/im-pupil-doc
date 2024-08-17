@@ -7,7 +7,7 @@ BEGIN
     IF (NEW.pupil_id IS NOT NULL AND NEW.admin_id IS NULL) OR
        (NEW.pupil_id IS NULL AND NEW.admin_id IS NOT NULL) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Only one field should be set: either pupil_id or admin_id';
+        SET MESSAGE_TEXT = 'Only one field should be set: either pupil_id oinstitutionr admin_id';
 END IF;
 END$$
 
@@ -123,10 +123,10 @@ BEGIN
     DECLARE institution_id integer;
     DECLARE group_member_id integer;
 
-    SELECT educational_intitution.id INTO institution_id FROM institution_group
+    SELECT educational_institution.id INTO institution_id FROM institution_group
                                                                   JOIN speciality ON institution_group.speciality_id = speciality.id
                                                                   JOIN faculty ON speciality.faculty_id = faculty.id
-                                                                  JOIN educational_intitution ON faculty.institution_id = educational_intitution.id
+                                                                  JOIN educational_institution ON faculty.institution_id = educational_institution.id
     WHERE institution_group.id = NEW.group_id
         LIMIT 1;
 
@@ -134,9 +134,9 @@ BEGIN
                                                          JOIN institution_group ON group_member.group_id = institution_group.id
                                                          JOIN speciality ON institution_group.speciality_id = speciality.id
                                                          JOIN faculty ON speciality.faculty_id = faculty.id
-                                                         JOIN educational_intitution ON faculty.institution_id = educational_intitution.id
+                                                         JOIN educational_institution ON faculty.institution_id = educational_institution.id
     WHERE group_member.code = NEW.code
-      AND educational_intitution.id = institution_id
+      AND educational_institution.id = institution_id
         LIMIT 1;
 
     IF group_member_id IS NOT null THEN

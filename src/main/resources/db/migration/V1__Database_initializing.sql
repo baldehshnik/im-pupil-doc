@@ -1,4 +1,4 @@
-CREATE TABLE educational_intitution (
+CREATE TABLE educational_institution (
                                         id integer PRIMARY KEY AUTO_INCREMENT,
                                         name text UNIQUE NOT null,
                                         abbreviation varchar(10) NOT null,
@@ -21,7 +21,7 @@ CREATE TABLE admin (
                        icon text null,
                        institution_id integer NOT null,
 
-                       FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                       FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                            ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE institution_event (
                                    type integer NOT null,
                                    institution_id integer NOT null,
 
-                                   FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                                   FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                                        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -125,7 +125,7 @@ CREATE TABLE practice (
                           website text null,
                           institution_id integer NOT null,
 
-                          FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                          FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                               ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -173,7 +173,7 @@ CREATE TABLE section (
                          to_course integer null,
                          institution_id integer NOT null,
 
-                         FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                         FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                              ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -188,7 +188,7 @@ CREATE TABLE pupil (
                        code varchar(16) NOT null,
                        institution_id integer NOT null,
 
-                       FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                       FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                            ON UPDATE CASCADE ON DELETE CASCADE,
 
                        UNIQUE(code, institution_id)
@@ -208,7 +208,7 @@ CREATE TABLE notification (
                               admin_id integer null,
                               institution_id integer not null,
 
-                              FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                              FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                                   ON DELETE CASCADE ON UPDATE CASCADE,
 
                               FOREIGN KEY (pupil_id) REFERENCES pupil(id)
@@ -232,7 +232,7 @@ CREATE TABLE section_question (
                                   FOREIGN KEY (pupil_id) REFERENCES pupil(id)
                                       ON DELETE CASCADE ON UPDATE CASCADE,
 
-                                  FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                                  FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                                       ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -259,7 +259,7 @@ CREATE TABLE faculty (
                          abbreviation varchar(10) NOT null,
                          institution_id integer NOT null,
 
-                         FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                         FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                              ON DELETE CASCADE ON UPDATE CASCADE,
 
                          UNIQUE(name, institution_id)
@@ -293,7 +293,7 @@ CREATE TABLE unconfirmed_pupil (
                                    speciality_id integer NOT null,
                                    faculty_id integer NOT null,
 
-                                   FOREIGN KEY (institution_id) REFERENCES educational_intitution(id)
+                                   FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                                        ON DELETE CASCADE ON UPDATE CASCADE,
 
                                    FOREIGN KEY (faculty_id) REFERENCES faculty(id)
