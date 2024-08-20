@@ -48,11 +48,11 @@ public class EducationInstitutionService {
                 );
     }
 
-    public InstitutionEventDto convertInstitutionEventToDto(InstitutionEvent institutionEvent) {
+    public InstitutionEventDto convertToDto(InstitutionEvent institutionEvent) {
         return modelMapper.map(institutionEvent, InstitutionEventDto.class);
     }
 
-    public InstitutionEvent convertInstitutionEventDtoToInstitutionEvent(InstitutionEventDto institutionEventDto) {
+    public InstitutionEvent convertToEvent(InstitutionEventDto institutionEventDto) {
         return modelMapper.map(institutionEventDto, InstitutionEvent.class);
     }
 }

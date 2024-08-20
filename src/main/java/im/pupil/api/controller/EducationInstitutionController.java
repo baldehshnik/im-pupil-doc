@@ -24,7 +24,7 @@ public class EducationInstitutionController {
         return educationInstitutionService
                 .getInstitutionEventsOfEducationInstitutionById(institutionId)
                 .stream()
-                .map(educationInstitutionService::convertInstitutionEventToDto)
+                .map(educationInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class EducationInstitutionController {
         return educationInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByName(institutionName)
                 .stream()
-                .map(educationInstitutionService::convertInstitutionEventToDto)
+                .map(educationInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class EducationInstitutionController {
         return educationInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByAbbreviation(institutionAbbreviation)
                 .stream()
-                .map(educationInstitutionService::convertInstitutionEventToDto)
+                .map(educationInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 }
