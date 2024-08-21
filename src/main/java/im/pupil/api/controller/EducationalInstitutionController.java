@@ -1,10 +1,15 @@
 package im.pupil.api.controller;
 
 import im.pupil.api.dto.InstitutionEventDto;
-import im.pupil.api.service.EducationInstitutionService;
+import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
+import im.pupil.api.exception.educational.institution.response.EducationalInstitutionErrorResponse;
+import im.pupil.api.exception.insitution.event.InstitutionEventNotFoundException;
+import im.pupil.api.exception.insitution.event.response.InstitutionEventErrorResponse;
 import im.pupil.api.service.EducationalInstitutionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,5 +50,21 @@ public class EducationalInstitutionController {
                 .stream()
                 .map(educationalInstitutionService::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<InstitutionEventErrorResponse> handleNotFoundInstitutionEventException(
+            InstitutionEventNotFoundException exception){
+        InstitutionEventErrorResponse errorResponse = new InstitutionEventErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<EducationalInstitutionErrorResponse> handleNotFoundEducationInstitutionException(
+            EducationalInstitutionNotFoundException exception){
+        EducationalInstitutionErrorResponse errorResponse = new EducationalInstitutionErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
