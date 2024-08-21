@@ -2,6 +2,7 @@ package im.pupil.api.controller;
 
 import im.pupil.api.dto.InstitutionEventDto;
 import im.pupil.api.service.EducationInstitutionService;
+import im.pupil.api.service.EducationalInstitutionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,38 +12,38 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/education/institution")
-public class EducationInstitutionController {
-    private final EducationInstitutionService educationInstitutionService;
+public class EducationalInstitutionController {
+    private final EducationalInstitutionService educationalInstitutionService;
 
     @Autowired
-    public EducationInstitutionController(EducationInstitutionService educationInstitutionService, ModelMapper modelMapper) {
-        this.educationInstitutionService = educationInstitutionService;
+    public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService, ModelMapper modelMapper) {
+        this.educationalInstitutionService = educationalInstitutionService;
     }
 
     @GetMapping("/events/id/{institutionId}")
     public List<InstitutionEventDto> getEventsByInstitutionId(@PathVariable Integer institutionId) {
-        return educationInstitutionService
+        return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionById(institutionId)
                 .stream()
-                .map(educationInstitutionService::convertToDto)
+                .map(educationalInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/events/institutionName/{institutionName}")
     public List<InstitutionEventDto> getEventsByInstitutionName(@PathVariable String institutionName) {
-        return educationInstitutionService
+        return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByName(institutionName)
                 .stream()
-                .map(educationInstitutionService::convertToDto)
+                .map(educationalInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/events/instituteAbbreviation/{institutionAbbreviation}")
     public List<InstitutionEventDto> getEventsByInstitutionAbbreviation(@PathVariable String institutionAbbreviation) {
-        return educationInstitutionService
+        return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByAbbreviation(institutionAbbreviation)
                 .stream()
-                .map(educationInstitutionService::convertToDto)
+                .map(educationalInstitutionService::convertToDto)
                 .collect(Collectors.toList());
     }
 }
