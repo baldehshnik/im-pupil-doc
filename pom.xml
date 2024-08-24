@@ -31,11 +31,15 @@
 
 		<database.admin.username>local_admin</database.admin.username>
 		<database.admin.password>1111</database.admin.password>
+
 		<database.user.username>local_user</database.user.username>
 		<database.user.password>1111</database.user.password>
+
 		<database.url>jdbc:mariadb://localhost:3306/im_pupil</database.url>
 		<database.schema.name>im_pupil</database.schema.name>
+
 		<database.plugin.version>10.17.1</database.plugin.version>
+		<model.mapper.version>3.2.1</model.mapper.version>
 
 	</properties>
 	<dependencies>
@@ -67,6 +71,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<scope>runtime</scope>
@@ -82,13 +95,8 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>3.2.1</version>
+			<version>${model.mapper.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>
