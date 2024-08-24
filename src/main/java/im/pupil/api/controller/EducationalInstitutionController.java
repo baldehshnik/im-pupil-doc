@@ -6,6 +6,10 @@ import im.pupil.api.exception.educational.institution.response.EducationalInstit
 import im.pupil.api.exception.insitution.event.InstitutionEventNotFoundException;
 import im.pupil.api.exception.insitution.event.response.InstitutionEventErrorResponse;
 import im.pupil.api.service.EducationalInstitutionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,31 @@ public class EducationalInstitutionController {
         this.educationalInstitutionService = educationalInstitutionService;
     }
 
+    @Operation(summary = "Get a list of institution events by institution ID")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found the list of institution events",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Institution events not found",
+            content = { @Content (
+                mediaType = "application/json",
+                schema = @Schema(implementation = InstitutionEventErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Education institution, which is used for event finding, not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
+            }
+    )
     @GetMapping("/events/id/{institutionId}")
     public List<InstitutionEventDto> getEventsByInstitutionId(@PathVariable Integer institutionId) {
         return educationalInstitutionService
@@ -34,6 +63,31 @@ public class EducationalInstitutionController {
                 .collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get a list of institution events by institution name")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found the list of institution events",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Institution events not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Education institution, which is used for event finding, not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
+            }
+    )
     @GetMapping("/events/institutionName/{institutionName}")
     public List<InstitutionEventDto> getEventsByInstitutionName(@PathVariable String institutionName) {
         return educationalInstitutionService
@@ -43,6 +97,31 @@ public class EducationalInstitutionController {
                 .collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get a list of institution events by institution abbreviation")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found the list of institution events",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Institution events not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Education institution, which is used for event finding, not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
+            }
+    )
     @GetMapping("/events/instituteAbbreviation/{institutionAbbreviation}")
     public List<InstitutionEventDto> getEventsByInstitutionAbbreviation(@PathVariable String institutionAbbreviation) {
         return educationalInstitutionService
@@ -65,6 +144,6 @@ public class EducationalInstitutionController {
             EducationalInstitutionNotFoundException exception){
         EducationalInstitutionErrorResponse errorResponse = new EducationalInstitutionErrorResponse(exception.getMessage());
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FAILED_DEPENDENCY);
     }
 }
