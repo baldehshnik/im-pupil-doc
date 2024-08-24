@@ -1,6 +1,7 @@
 package im.pupil.api.service;
 
 import im.pupil.api.dto.NewsDto;
+import im.pupil.api.exception.news.NewsNotFoundException;
 import im.pupil.api.model.News;
 import im.pupil.api.repository.NewsRepository;
 import org.modelmapper.ModelMapper;
@@ -23,7 +24,13 @@ public class NewsService {
     }
 
     public List<News> findAll() {
-        return newsRepository.findAll();
+        List<News> result = newsRepository.findAll();
+
+        if (result.isEmpty()) {
+            throw new NewsNotFoundException("No news found");
+        }
+
+        return result;
     }
 
     public NewsDto convertToDto (News news) {
