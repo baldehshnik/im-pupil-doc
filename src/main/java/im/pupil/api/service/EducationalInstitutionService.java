@@ -75,12 +75,12 @@ public class EducationalInstitutionService {
     }
 
     private EducationalInstitution findEducationalInstitutionByName(String institutionName) {
-        Optional<EducationalInstitution> educationalInstitution = Optional.ofNullable(educationalInstitutionRepository.findByName(institutionName));
+        Optional<EducationalInstitution> educationalInstitution = educationalInstitutionRepository.findByName(institutionName);
         return educationalInstitution.orElseThrow(() -> new EducationalInstitutionNotFoundException("No educational institution found with name: " + institutionName));
     }
 
     private EducationalInstitution findEducationalInstitutionByAbbreviation(String institutionAbbreviation) {
-        Optional<EducationalInstitution> educationalInstitution = Optional.ofNullable(educationalInstitutionRepository.findByAbbreviation(institutionAbbreviation));
+        Optional<EducationalInstitution> educationalInstitution = educationalInstitutionRepository.findByAbbreviation(institutionAbbreviation);
         return educationalInstitution.orElseThrow(() -> new EducationalInstitutionNotFoundException("No educational institution found with abbreviation: " + institutionAbbreviation));
     }
 
