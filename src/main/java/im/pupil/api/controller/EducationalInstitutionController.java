@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +47,7 @@ public class EducationalInstitutionController {
     )
     @ApiResponse(
             responseCode = "424",
-            description = "Education institution, which is used for event finding, not found",
+            description = "Education institution, which is used for event finding, not existing",
             content = { @Content (
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
@@ -82,7 +81,7 @@ public class EducationalInstitutionController {
     )
     @ApiResponse(
             responseCode = "424",
-            description = "Education institution, which is used for event finding, not found",
+            description = "Education institution, which is used for event finding, not existing",
             content = { @Content (
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
@@ -116,7 +115,7 @@ public class EducationalInstitutionController {
     )
     @ApiResponse(
             responseCode = "424",
-            description = "Education institution, which is used for event finding, not found",
+            description = "Education institution, which is used for event finding, not existing",
             content = { @Content (
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
