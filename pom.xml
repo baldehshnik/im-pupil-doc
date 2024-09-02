@@ -40,6 +40,7 @@
 
 		<database.migration.plugin.version>10.17.1</database.migration.plugin.version>
 		<model.mapper.version>3.2.1</model.mapper.version>
+		<jjwt.version>0.12.6</jjwt.version>
 
 	</properties>
 	<dependencies>
@@ -97,6 +98,13 @@
 			<artifactId>modelmapper</artifactId>
 			<version>${model.mapper.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
