@@ -1,6 +1,9 @@
 package im.pupil.api.controller;
 
+import im.pupil.api.dto.AdminDto;
 import im.pupil.api.dto.InstitutionEventDto;
+import im.pupil.api.exception.admin.AdminNotFoundException;
+import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
 import im.pupil.api.exception.educational.institution.response.EducationalInstitutionErrorResponse;
 import im.pupil.api.exception.insitution.event.InstitutionEventNotFoundException;
@@ -22,10 +25,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/education/institution")
 public class EducationalInstitutionController {
     private final EducationalInstitutionService educationalInstitutionService;
+    private final EducationalInstitutionService.EducationInstitutionAssociatedConverters educationalInstitutionConverters;
 
     @Autowired
-    public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService, ModelMapper modelMapper) {
+    public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService) {
         this.educationalInstitutionService = educationalInstitutionService;
+        this.educationalInstitutionConverters = educationalInstitutionService.getEducationInstitutionAssociatedConverters();
     }
 
     @Operation(summary = "Get a list of institution events by institution ID")
@@ -58,7 +63,7 @@ public class EducationalInstitutionController {
         return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionById(institutionId)
                 .stream()
-                .map(educationalInstitutionService::convertToDto)
+                .map(educationalInstitutionConverters::convertInstitutionEventToDto)
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +97,7 @@ public class EducationalInstitutionController {
         return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByName(institutionName)
                 .stream()
-                .map(educationalInstitutionService::convertToDto)
+                .map(educationalInstitutionConverters::convertInstitutionEventToDto)
                 .collect(Collectors.toList());
     }
 
@@ -126,7 +131,40 @@ public class EducationalInstitutionController {
         return educationalInstitutionService
                 .getInstitutionEventsOfEducationInstitutionByAbbreviation(institutionAbbreviation)
                 .stream()
-                .map(educationalInstitutionService::convertToDto)
+                .map(educationalInstitutionConverters::convertInstitutionEventToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Get a list of admins by institution id")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found the list of admins",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AdminDto.class, type = "array"))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Admins not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AdminErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Education institution, which is used for admin finding, not existing",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
+            }
+    )
+    @GetMapping("/admins/id/{institutionId}")
+    public List<AdminDto> getAdminsOfInstitutionById(@PathVariable Integer institutionId) {
+        return educationalInstitutionService.getAdminsOfEducationalInstitutionByInstitutionId(institutionId)
+                .stream()
+                .map(educationalInstitutionConverters::convertAdminToDto)
                 .collect(Collectors.toList());
     }
 
@@ -144,5 +182,13 @@ public class EducationalInstitutionController {
         EducationalInstitutionErrorResponse errorResponse = new EducationalInstitutionErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleNotFoundAdminException(
+            AdminNotFoundException exception){
+        AdminErrorResponse errorResponse = new AdminErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
