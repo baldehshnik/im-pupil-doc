@@ -1,6 +1,7 @@
 package im.pupil.api.service;
 
 import im.pupil.api.dto.AdminDto;
+import im.pupil.api.dto.EducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
@@ -90,19 +91,27 @@ public class EducationalInstitutionService {
         return admins;
     }
 
-    private EducationalInstitution findEducationalInstitutionById(Integer institutionId) {
+    public EducationalInstitution findEducationalInstitutionById(Integer institutionId) {
         Optional<EducationalInstitution> educationalInstitution = educationalInstitutionRepository.findById(institutionId);
         return educationalInstitution.orElseThrow(() -> new EducationalInstitutionNotFoundException("No educational institution found with id: " + institutionId));
     }
 
-    private EducationalInstitution findEducationalInstitutionByName(String institutionName) {
+    public EducationalInstitution findEducationalInstitutionByName(String institutionName) {
         Optional<EducationalInstitution> educationalInstitution = educationalInstitutionRepository.findByName(institutionName);
         return educationalInstitution.orElseThrow(() -> new EducationalInstitutionNotFoundException("No educational institution found with name: " + institutionName));
     }
 
-    private EducationalInstitution findEducationalInstitutionByAbbreviation(String institutionAbbreviation) {
+    public EducationalInstitution findEducationalInstitutionByAbbreviation(String institutionAbbreviation) {
         Optional<EducationalInstitution> educationalInstitution = educationalInstitutionRepository.findByAbbreviation(institutionAbbreviation);
         return educationalInstitution.orElseThrow(() -> new EducationalInstitutionNotFoundException("No educational institution found with abbreviation: " + institutionAbbreviation));
+    }
+
+    public EducationalInstitutionDto convertToDto(EducationalInstitution educationalInstitution) {
+        return modelMapper.map(educationalInstitution, EducationalInstitutionDto.class);
+    }
+
+    public EducationalInstitution convertToEntity(EducationalInstitutionDto educationalInstitutionDto) {
+        return modelMapper.map(educationalInstitutionDto, EducationalInstitution.class);
     }
 
     public EducationInstitutionAssociatedConverters getEducationInstitutionAssociatedConverters() {
