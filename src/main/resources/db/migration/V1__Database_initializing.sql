@@ -118,7 +118,7 @@ CREATE TABLE event_sorting (
 CREATE TABLE practice (
                           id integer PRIMARY KEY AUTO_INCREMENT,
                           icon text null,
-                          payability boolean NOT null,
+                          pay_ability boolean NOT null,
                           description text NOT null,
                           work_type integer NOT null,
                           title varchar(32) NOT null,
