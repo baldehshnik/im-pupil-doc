@@ -6,6 +6,10 @@ import im.pupil.api.exception.educational.institution.response.EducationalInstit
 import im.pupil.api.exception.practice.PracticeNotFoundException;
 import im.pupil.api.exception.practice.response.PracticeErrorResponse;
 import im.pupil.api.service.PracticeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +28,53 @@ public class PracticeController {
         this.practiceService = practiceService;
     }
 
+    @Operation(summary = "Get practice by ID")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found practice",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PracticeDto.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Practice not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PracticeErrorResponse.class))
+            }
+    )
     @GetMapping("/search/id/{id}")
     public PracticeDto getPracticeWithPracticeId(@PathVariable Integer id) {
         return practiceService.convertToDto(practiceService.findPracticeById(id));
     }
 
+    @Operation(summary = "Get a list of practices in specific education institution")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Found the list of practices",
+            content = { @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PracticeDto.class, type = "array"))
+            }
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Practice not found",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PracticeErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Education institution, which is used for practice finding, not existing",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
+            }
+    )
     @GetMapping("/search/institution/id/{institution_id}")
     public List<PracticeDto> getPracticesWithInstitutionId(@PathVariable Integer institution_id) {
         return practiceService
