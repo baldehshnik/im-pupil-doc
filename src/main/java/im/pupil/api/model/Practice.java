@@ -6,12 +6,16 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "practice", schema = "im_pupil", indexes = {
         @Index(name = "institution_id", columnList = "institution_id")
 })
 public class Practice {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -20,8 +24,8 @@ public class Practice {
     private String icon;
 
     @NotNull
-    @Column(name = "payability", nullable = false)
-    private Boolean payability = false;
+    @Column(name = "pay_ability", nullable = false)
+    private Boolean payAbility = false;
 
     @NotNull
     @Lob
@@ -47,6 +51,12 @@ public class Practice {
     @JoinColumn(name = "institution_id", nullable = false)
     private EducationalInstitution institution;
 
+    @OneToMany(mappedBy = "practice")
+    private Set<InformationBlock> informationBlocks = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "practice")
+    private Set<Relocation> relocations = new LinkedHashSet<>();
+
     public Integer getId() {
         return id;
     }
@@ -63,12 +73,12 @@ public class Practice {
         this.icon = icon;
     }
 
-    public Boolean getPayability() {
-        return payability;
+    public Boolean getPayAbility() {
+        return payAbility;
     }
 
-    public void setPayability(Boolean payability) {
-        this.payability = payability;
+    public void setPayAbility(Boolean payAbility) {
+        this.payAbility = payAbility;
     }
 
     public String getDescription() {
@@ -109,6 +119,22 @@ public class Practice {
 
     public void setInstitution(EducationalInstitution institution) {
         this.institution = institution;
+    }
+
+    public Set<InformationBlock> getInformationBlocks() {
+        return informationBlocks;
+    }
+
+    public void setInformationBlocks(Set<InformationBlock> informationBlocks) {
+        this.informationBlocks = informationBlocks;
+    }
+
+    public Set<Relocation> getRelocations() {
+        return relocations;
+    }
+
+    public void setRelocations(Set<Relocation> relocations) {
+        this.relocations = relocations;
     }
 
 }
