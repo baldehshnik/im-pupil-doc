@@ -1,8 +1,8 @@
 package im.pupil.api.service;
 
 import im.pupil.api.dto.InformationBlockDto;
+import im.pupil.api.exception.information.block.InformationBlockAlreadyExistsException;
 import im.pupil.api.exception.practice.PracticeNotFoundException;
-import im.pupil.api.exception.relocation.RelocationAlreadyExistsException;
 import im.pupil.api.model.InformationBlock;
 import im.pupil.api.repository.InformationBlockRepository;
 import im.pupil.api.repository.PracticeRepository;
@@ -29,7 +29,7 @@ public class InformationBlockService {
 
     public void saveInformationBlockWithPracticeId(InformationBlock informationBlock, Integer practiceId) {
         if (informationBlockRepository.findInformationBlockByTitleAndPractice_Id(informationBlock.getTitle(), practiceId).isPresent()) {
-            throw new RelocationAlreadyExistsException(
+            throw new InformationBlockAlreadyExistsException(
                     "Information block with name: " +
                             informationBlock.getTitle() +
                             "and practiceId: " + practiceId +
