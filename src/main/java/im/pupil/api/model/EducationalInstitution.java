@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 public class EducationalInstitution {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull

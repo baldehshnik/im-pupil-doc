@@ -17,6 +17,7 @@ import java.time.Instant;
 public class EventServiceInfo {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull

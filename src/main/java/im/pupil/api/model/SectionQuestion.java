@@ -16,6 +16,7 @@ import java.time.Instant;
 public class SectionQuestion {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull

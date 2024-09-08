@@ -15,6 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Faculty {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 256)

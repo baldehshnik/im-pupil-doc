@@ -15,6 +15,7 @@ import java.time.LocalTime;
 public class Lesson {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 64)

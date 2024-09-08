@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Section {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 32)

@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class EventSorting {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "gender")

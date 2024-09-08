@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 public class News {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 128)

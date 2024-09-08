@@ -18,6 +18,7 @@ import java.time.Instant;
 public class Schedule {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 32)
