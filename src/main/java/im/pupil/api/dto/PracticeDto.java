@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * DTO for {@link im.pupil.api.model.Practice}
@@ -27,17 +29,34 @@ public class PracticeDto implements Serializable {
     @NotBlank(message = "Title should be not empty")
     private String title;
     private String website;
+    @NotNull(message = "Institution should be not null")
+    private EducationalInstitutionDto institution;
+    @NotNull(message = "Information block should be not null")
+    private Set<InformationBlockDto> informationBlocks = new LinkedHashSet<>();
+    @NotNull(message = "Relocation should be not null")
+    private Set<RelocationDto> relocations = new LinkedHashSet<>();
 
     public PracticeDto() {
     }
 
-    public PracticeDto(String icon, Boolean payAbility, String description, Integer workType, String title, String website) {
+    public PracticeDto(String icon,
+                       Boolean payAbility,
+                       String description,
+                       Integer workType,
+                       String title,
+                       String website,
+                       EducationalInstitutionDto institution,
+                       Set<InformationBlockDto> informationBlocks,
+                       Set<RelocationDto> relocations) {
         this.icon = icon;
         this.payAbility = payAbility;
         this.description = description;
         this.workType = workType;
         this.title = title;
         this.website = website;
+        this.institution = institution;
+        this.informationBlocks = informationBlocks;
+        this.relocations = relocations;
     }
 
     public String getIcon() {
@@ -88,6 +107,30 @@ public class PracticeDto implements Serializable {
         this.website = website;
     }
 
+    public EducationalInstitutionDto getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(EducationalInstitutionDto institution) {
+        this.institution = institution;
+    }
+
+    public Set<InformationBlockDto> getInformationBlocks() {
+        return informationBlocks;
+    }
+
+    public void setInformationBlocks(Set<InformationBlockDto> informationBlocks) {
+        this.informationBlocks = informationBlocks;
+    }
+
+    public Set<RelocationDto> getRelocations() {
+        return relocations;
+    }
+
+    public void setRelocations(Set<RelocationDto> relocations) {
+        this.relocations = relocations;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,7 +153,7 @@ public class PracticeDto implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "(" +
                 "icon = " + icon + ", " +
-                "payability = " + payAbility + ", " +
+                "payAbility = " + payAbility + ", " +
                 "description = " + description + ", " +
                 "workType = " + workType + ", " +
                 "title = " + title + ", " +
