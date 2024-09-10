@@ -106,11 +106,7 @@ public class PracticeController {
                     "than AlreadyExistsException will be thrown")
     @ApiResponse(
             responseCode = "201",
-            description = "Create new practice",
-            content = { @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = PracticeDto.class))
-            }
+            description = "Create new practice, without content in response"
     )
     @ApiResponse(
             responseCode = "400",
