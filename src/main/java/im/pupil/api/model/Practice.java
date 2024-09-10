@@ -1,5 +1,6 @@
 package im.pupil.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -52,9 +53,11 @@ public class Practice {
     private EducationalInstitution institution;
 
     @OneToMany(mappedBy = "practice")
+    @JsonManagedReference
     private Set<InformationBlock> informationBlocks = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "practice")
+    @JsonManagedReference
     private Set<Relocation> relocations = new LinkedHashSet<>();
 
     public Integer getId() {
