@@ -56,18 +56,19 @@ public class PracticeService {
     }
 
     @Transactional
-    public void createPracticeWithRelocationAndEducationInstitutionAndInformationBlock(Practice practice) {
-        EducationalInstitution educationalInstitution = educationalInstitutionService.findEducationalInstitutionByAbbreviation(
-                practice.getInstitution().getAbbreviation()
-        );
+    public void createPracticeWithRelocationInformationBlockWithExistingEducationInstitution(
+            Practice practice,
+            Set<Relocation> relocations,
+            Set<InformationBlock> informationBlocks) {
+        EducationalInstitution educationalInstitution = educationalInstitutionService
+                .findEducationalInstitutionByAbbreviation(practice.getInstitution().getAbbreviation());
         practice.setInstitution(educationalInstitution);
+        practiceRepository.save(practice);
 
-        Set<Relocation> relocation = practice.getRelocations();
-        relocation.forEach(
+        relocations.forEach(
                 (relocationEntity) -> relocationService.saveRelocationWithPracticeId(relocationEntity, practice.getId())
         );
 
-        Set<InformationBlock> informationBlocks = practice.getInformationBlocks();
         informationBlocks.forEach(
                 (informationBlockEntity) -> informationBlockService.saveInformationBlockWithPracticeId(informationBlockEntity, practice.getId())
         );
