@@ -10,7 +10,9 @@ import im.pupil.api.exception.practice.PracticeNotFoundException;
 import im.pupil.api.exception.practice.response.PracticeErrorResponse;
 import im.pupil.api.exception.relocation.RelocationAlreadyExistsException;
 import im.pupil.api.exception.relocation.response.RelocationErrorResponse;
+import im.pupil.api.service.InformationBlockService;
 import im.pupil.api.service.PracticeService;
+import im.pupil.api.service.RelocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,10 +32,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/education/practice")
 public class PracticeController {
     private final PracticeService practiceService;
+    private final RelocationService relocationService;
+    private final InformationBlockService informationBlockService;
 
     @Autowired
-    public PracticeController(PracticeService practiceService) {
+    public PracticeController(PracticeService practiceService,
+                              RelocationService relocationService,
+                              InformationBlockService informationBlockService) {
         this.practiceService = practiceService;
+        this.relocationService = relocationService;
+        this.informationBlockService = informationBlockService;
     }
 
     @Operation(summary = "Get practice by ID")
@@ -152,7 +160,14 @@ public class PracticeController {
             throw new PracticeNotCreatedException(buildErrorMessageByBindingResult(bindingResult));
         }
 
-        practiceService.createPracticeWithRelocationAndEducationInstitutionAndInformationBlock(practiceService.convertToEntity(practiceDto));
+        practiceService.createPracticeWithRelocationInformationBlockWithExistingEducationInstitution(
+                practiceService.convertToEntity(practiceDto),
+                practiceDto.getRelocations().stream()
+                        .map(relocationService::convertToEntity).collect(Collectors.toSet()),
+                practiceDto.getInformationBlocks().stream()
+                        .map(informationBlockService::convertToEntity).collect(Collectors.toSet())
+        );
+
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
