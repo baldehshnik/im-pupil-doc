@@ -21,16 +21,13 @@ public class InformationBlockDto implements Serializable {
     @NotEmpty(message = "Content should be not empty")
     @NotBlank
     private String content;
-    @NotNull
-    private PracticeDto practice;
 
     public InformationBlockDto() {
     }
 
-    public InformationBlockDto(String title, String content, PracticeDto practice) {
+    public InformationBlockDto(String title, String content) {
         this.title = title;
         this.content = content;
-        this.practice = practice;
     }
 
     public String getTitle() {
@@ -49,34 +46,24 @@ public class InformationBlockDto implements Serializable {
         this.content = content;
     }
 
-    public PracticeDto getPractice() {
-        return practice;
-    }
-
-    public void setPractice(PracticeDto practice) {
-        this.practice = practice;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InformationBlockDto entity = (InformationBlockDto) o;
         return Objects.equals(this.title, entity.title) &&
-                Objects.equals(this.content, entity.content) &&
-                Objects.equals(this.practice, entity.practice);
+                Objects.equals(this.content, entity.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, content, practice);
+        return Objects.hash(title, content);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
                 "title = " + title + ", " +
-                "content = " + content + ", " +
-                "practice = " + practice + ")";
+                "content = " + content + ")";
     }
 }
