@@ -12,11 +12,6 @@ import java.util.Objects;
  * DTO for {@link im.pupil.api.model.Pupil}
  */
 public class PupilDto implements Serializable {
-    @NotNull
-    @Size(max = 256)
-    @NotEmpty(message = "Email should be not empty")
-    @NotBlank(message = "Email should be not blank")
-    private String email;
     private String icon;
     @NotNull
     @Size(max = 16)
@@ -24,18 +19,9 @@ public class PupilDto implements Serializable {
 
     public PupilDto() {}
 
-    public PupilDto(String email, String icon, String code) {
-        this.email = email;
+    public PupilDto(String icon, String code) {
         this.icon = icon;
         this.code = code;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getIcon() {
@@ -59,20 +45,18 @@ public class PupilDto implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PupilDto entity = (PupilDto) o;
-        return Objects.equals(this.email, entity.email) &&
-                Objects.equals(this.icon, entity.icon) &&
+        return Objects.equals(this.icon, entity.icon) &&
                 Objects.equals(this.code, entity.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, icon, code);
+        return Objects.hash( icon, code);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "email = " + email + ", " +
                 "icon = " + icon + ", " +
                 "code = " + code + ")";
     }

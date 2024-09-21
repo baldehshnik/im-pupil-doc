@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PupilRepository extends JpaRepository<Pupil, Integer> {
     Optional<Pupil> findById(int id);
-    Optional<Pupil> findByEmail(String email);
+    Optional<Pupil> findByUserId(int userId);
     Optional<Pupil> findByCode(String code);
     List<Pupil> findByInstitution_Id(int id);
 }
