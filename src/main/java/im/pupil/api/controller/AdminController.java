@@ -3,6 +3,10 @@ package im.pupil.api.controller;
 import im.pupil.api.dto.AdminDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
+import im.pupil.api.exception.role.RoleNotFoundException;
+import im.pupil.api.exception.role.response.RoleErrorResponse;
+import im.pupil.api.exception.user.UserNotFoundException;
+import im.pupil.api.exception.user.response.UserErrorResponse;
 import im.pupil.api.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +42,7 @@ public class AdminController {
             description = "Admin account not found",
             content = { @Content (
                     mediaType = "application/json",
-                    schema = @Schema(implementation = AdminDto.class))
+                    schema = @Schema(implementation = AdminErrorResponse.class))
             }
     )
     @GetMapping("/account/search/id/{id}")
@@ -60,7 +64,23 @@ public class AdminController {
             description = "Admin account not found",
             content = { @Content (
                     mediaType = "application/json",
-                    schema = @Schema(implementation = AdminDto.class))
+                    schema = @Schema(implementation = AdminErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "424",
+            description = "Admin account not found, because there is no such user",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UserErrorResponse.class))
+            }
+    )
+    @ApiResponse(
+            responseCode = "409",
+            description = "User doesnt have such a role",
+            content = { @Content (
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = RoleErrorResponse.class))
             }
     )
     @GetMapping("/account/search/email/{email}")
@@ -70,8 +90,22 @@ public class AdminController {
 
     @ExceptionHandler
     private ResponseEntity<AdminErrorResponse> handleAdminNotFoundException(AdminNotFoundException exception) {
-        AdminErrorResponse responseEntity = new AdminErrorResponse(exception.getMessage());
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
 
-        return new ResponseEntity<>(responseEntity, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<UserErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
+        UserErrorResponse response = new UserErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<RoleErrorResponse> handleRoleNotFoundException(RoleNotFoundException exception) {
+        RoleErrorResponse response = new RoleErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }
