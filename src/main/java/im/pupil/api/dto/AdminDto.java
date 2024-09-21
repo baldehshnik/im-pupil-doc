@@ -22,12 +22,6 @@ public class AdminDto implements Serializable {
     private String lastname;
     @Size(max = 32)
     private String patronymic;
-    @NotNull(message = "Email should be not null")
-    @Size(max = 256)
-    @Email(message = "Invalid email format")
-    @NotEmpty(message = "Email should be not empty")
-    @NotBlank(message = "Email should be not blank")
-    private String email;
     @NotNull(message = "Access mode should be not null")
     private Integer accessMode;
     private String icon;
@@ -35,11 +29,10 @@ public class AdminDto implements Serializable {
     public AdminDto() {
     }
 
-    public AdminDto(String firstname, String lastname, String patronymic, String email, Integer accessMode, String icon) {
+    public AdminDto(String firstname, String lastname, String patronymic, Integer accessMode, String icon) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.patronymic = patronymic;
-        this.email = email;
         this.accessMode = accessMode;
         this.icon = icon;
     }
@@ -68,14 +61,6 @@ public class AdminDto implements Serializable {
         this.patronymic = patronymic;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Integer getAccessMode() {
         return accessMode;
     }
@@ -100,14 +85,13 @@ public class AdminDto implements Serializable {
         return Objects.equals(this.firstname, entity.firstname) &&
                 Objects.equals(this.lastname, entity.lastname) &&
                 Objects.equals(this.patronymic, entity.patronymic) &&
-                Objects.equals(this.email, entity.email) &&
                 Objects.equals(this.accessMode, entity.accessMode) &&
                 Objects.equals(this.icon, entity.icon);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstname, lastname, patronymic, email, accessMode, icon);
+        return Objects.hash(firstname, lastname, patronymic, accessMode, icon);
     }
 
     @Override
@@ -116,7 +100,6 @@ public class AdminDto implements Serializable {
                 "firstname = " + firstname + ", " +
                 "lastname = " + lastname + ", " +
                 "patronymic = " + patronymic + ", " +
-                "email = " + email + ", " +
                 "accessMode = " + accessMode + ", " +
                 "icon = " + icon + ")";
     }

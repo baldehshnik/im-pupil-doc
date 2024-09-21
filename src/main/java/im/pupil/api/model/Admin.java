@@ -10,12 +10,12 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "admin", schema = "im_pupil", indexes = {
         @Index(name = "institution_id", columnList = "institution_id")
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "email", columnNames = {"email"})
+        @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
 })
 public class Admin {
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
     @Size(max = 32)
@@ -32,16 +32,6 @@ public class Admin {
     @Column(name = "patronymic", length = 32)
     private String patronymic;
 
-    @Size(max = 256)
-    @NotNull
-    @Column(name = "email", nullable = false, length = 256)
-    private String email;
-
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "password", nullable = false, length = 20)
-    private String password;
-
     @NotNull
     @Column(name = "access_mode", nullable = false)
     private Integer accessMode;
@@ -55,6 +45,12 @@ public class Admin {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
     private EducationalInstitution institution;
+
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Integer getId() {
         return id;
@@ -88,22 +84,6 @@ public class Admin {
         this.patronymic = patronymic;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Integer getAccessMode() {
         return accessMode;
     }
@@ -126,6 +106,14 @@ public class Admin {
 
     public void setInstitution(EducationalInstitution institution) {
         this.institution = institution;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
