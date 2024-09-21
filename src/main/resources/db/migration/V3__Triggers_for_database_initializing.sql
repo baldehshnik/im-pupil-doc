@@ -34,12 +34,20 @@ BEGIN
     SELECT id INTO unconfirmed_pupil_id FROM unconfirmed_pupil WHERE unconfirmed_pupil.code = NEW.code LIMIT 1;
 
     IF unconfirmed_pupil_id IS NOT null THEN
-    		INSERT IGNORE INTO pupil(email, password, institution_id, code)
-    SELECT email, password, institution_id, code FROM unconfirmed_pupil WHERE unconfirmed_pupil_id = id;
+        INSERT IGNORE INTO user(email, password)
+        SELECT email, password FROM unconfirmed_pupil WHERE unconfirmed_pupil_id = id;
 
-    SELECT id INTO new_pupil_id FROM pupil WHERE email = (SELECT email FROM unconfirmed_pupil WHERE unconfirmed_pupil_id = id);
+    IF unconfirmed_pupil_id IS NOT null THEN
+    		INSERT IGNORE INTO pupil(user_id, institution_id, code)
+    SELECT user.id, institution_id, code FROM unconfirmed_pupil JOIN user on unconfirmed_pupil.email = user.email
+    WHERE unconfirmed_pupil_id = unconfirmed_pupil.id;
+
+    SELECT id INTO new_pupil_id FROM pupil WHERE user_id = (SELECT id FROM user WHERE email = (
+        SELECT email FROM unconfirmed_pupil WHERE unconfirmed_pupil_id = id
+        ));
 
     UPDATE group_member SET pupil_id = new_pupil_id WHERE id = NEW.id;
+END IF;
 END IF;
 END IF;
 END$$
@@ -143,6 +151,31 @@ BEGIN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'A student with this code already exists in another group!';
 END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER prevent_conflicting_user_and_admin
+    BEFORE INSERT ON user_role
+    FOR EACH ROW
+BEGIN
+    DECLARE roleConflict INT;
+
+    SELECT COUNT(*)
+    INTO roleConflict
+    FROM user_role
+    WHERE user_id = NEW.user_id
+      AND role_id IN (
+        SELECT id FROM role WHERE role_name IN ('USER', 'ADMIN')
+    );
+
+    IF roleConflict > 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'User cannot have both user and admin roles.';
+    END IF;
 END$$
 
 DELIMITER ;

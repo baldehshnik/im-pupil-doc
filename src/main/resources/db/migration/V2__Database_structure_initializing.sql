@@ -1,10 +1,42 @@
 CREATE TABLE educational_institution (
-                                        id integer PRIMARY KEY AUTO_INCREMENT,
-                                        name text UNIQUE NOT null,
-                                        abbreviation varchar(10) NOT null,
-                                        type integer not null,
-                                        address text null,
-                                        phone varchar(20) null
+                                         id integer PRIMARY KEY AUTO_INCREMENT,
+                                         name text UNIQUE NOT null,
+                                         abbreviation varchar(10) NOT null,
+                                         type integer not null,
+                                         address text null,
+                                         phone varchar(20) null
+);
+
+
+
+
+CREATE TABLE user (
+                      id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                      email VARCHAR(255) unique NOT NULL,
+                      password VARCHAR(128) NOT NULL
+);
+
+
+
+
+CREATE TABLE role (
+                      id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                      role_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+
+
+
+CREATE TABLE user_role (
+                           user_id INTEGER NOT NULL,
+                           role_id INTEGER NOT NULL,
+
+                           FOREIGN KEY (user_id) REFERENCES user(id)
+                               ON DELETE CASCADE,
+                           FOREIGN KEY (role_id) references role(id)
+                               ON DELETE CASCADE,
+
+                           UNIQUE (user_id, role_id)
 );
 
 
@@ -15,14 +47,16 @@ CREATE TABLE admin (
                        firstname varchar(32) NOT null,
                        lastname varchar(32) NOT null,
                        patronymic varchar(32) null,
-                       email varchar(256) UNIQUE NOT null,
-                       password varchar(20) NOT null,
                        access_mode integer NOT null,
                        icon text null,
                        institution_id integer NOT null,
+                       user_id integer unique not null,
 
                        FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
-                           ON UPDATE CASCADE ON DELETE CASCADE
+                           ON UPDATE CASCADE ON DELETE CASCADE,
+
+                       FOREIGN KEY (user_id) REFERENCES user(id)
+                           on UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -182,13 +216,15 @@ CREATE TABLE section (
 
 CREATE TABLE pupil (
                        id integer PRIMARY KEY AUTO_INCREMENT,
-                       email varchar(256) UNIQUE NOT null,
-                       password varchar(16) NOT null,
                        icon text null,
                        code varchar(16) NOT null,
                        institution_id integer NOT null,
+                       user_id integer unique not null,
 
                        FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
+                           ON UPDATE CASCADE ON DELETE CASCADE,
+
+                       FOREIGN KEY (user_id) REFERENCES user(id)
                            ON UPDATE CASCADE ON DELETE CASCADE,
 
                        UNIQUE(code, institution_id)
