@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,6 +47,7 @@ public class AdminController {
             }
     )
     @GetMapping("/account/search/id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     AdminDto getAdminAccountById(@PathVariable Integer id) {
         return adminService.convertToDto(adminService.findAdminById(id));
     }
@@ -84,6 +86,7 @@ public class AdminController {
             }
     )
     @GetMapping("/account/search/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
     AdminDto getAdminAccountByEmail(@PathVariable String email) {
         return adminService.convertToDto(adminService.findAdminByEmail(email));
     }
