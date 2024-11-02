@@ -3,10 +3,16 @@ package im.pupil.api.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "user", schema = "im_pupil", uniqueConstraints = {
         @UniqueConstraint(name = "email", columnNames = {"email"})
@@ -27,7 +33,7 @@ public class User {
     @Column(name = "password", nullable = false, length = 128)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
 
     public Integer getId() {

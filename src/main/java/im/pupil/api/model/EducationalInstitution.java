@@ -3,8 +3,14 @@ package im.pupil.api.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "educational_institution", schema = "im_pupil", uniqueConstraints = {
         @UniqueConstraint(name = "name", columnNames = {"name"})
 })
@@ -84,6 +90,4 @@ public class EducationalInstitution {
         this.phone = phone;
     }
 
-    public EducationalInstitution() {
-    }
 }
