@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> {
     @Query("SELECT ur.role FROM UserRole ur WHERE ur.user.id = :userId")
@@ -15,4 +16,6 @@ public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> 
 
     @Query("SELECT COUNT(ur) > 0 FROM UserRole ur WHERE ur.user.id = :userId AND ur.role.id = :roleId")
     boolean existsByUserIdAndRoleId(@Param("userId") Integer userId, @Param("roleId") Integer roleId);
+
+    Optional<UserRole> findByUserIdAndRoleId(Integer userId, Integer id);
 }
