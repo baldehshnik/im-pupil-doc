@@ -8,6 +8,8 @@ import im.pupil.api.repository.AdminRepository;
 import im.pupil.api.security.RolesEnum;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class AdminService {
+public class AdminService{
     private final AdminRepository adminRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -53,6 +55,19 @@ public class AdminService {
         Optional<Admin> admin = adminRepository.findByUserId(userId);
 
         return admin.orElseThrow(() -> new AdminNotFoundException("No admin found with userId: " + userId));
+    }
+
+    public boolean existsByUserId(Integer userId) {
+        return adminRepository.existsByUserId(userId);
+    }
+
+    public Admin save(Admin admin) {
+        return adminRepository.save(admin);
+    }
+
+    public UserDetails loadAdminUserDetailsByEmail(String email) throws UsernameNotFoundException {
+        Admin admin = findAdminByEmail(email);
+        return userService.loadUserByUsername(admin.getUser().getEmail());
     }
 
     public AdminDto convertToDto(Admin admin) {
