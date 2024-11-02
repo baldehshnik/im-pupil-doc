@@ -1,0 +1,26 @@
+#create application.properties file, where specify values for this variables. you can delete some of them
+
+spring.application.name=api
+
+#db config
+spring.datasource.url=jdbc:mariadb://{address}:{port}/{db_name}
+spring.datasource.username={name of default user id db}
+spring.datasource.password={password of default user id db}
+
+#flyway
+spring.flyway.enabled=true
+spring.flyway.clean-disabled={false/true}
+
+#hibernate
+spring.jpa.properties.hibernate.show_sql={false/true}
+spring.jpa.properties.hibernate.format_sql={false/true}
+
+#server config for local use
+server.address=0.0.0.0
+
+#private key for jwt token
+token.signing.key={GENERATE_YOUR_API_KEY_FOR_ACCESS_TOKENS}
+token.refresh.signing.key={GENERATE_YOUR_API_KEY_FOR_REFRESH_TOKENS}
+
+logging.level.org.springframework.security={DEBUG or delete this line}
+debug={false/true}
