@@ -20,7 +20,9 @@ server.address=0.0.0.0
 
 #private key for jwt token
 token.signing.key={GENERATE_YOUR_API_KEY_FOR_ACCESS_TOKENS}
-token.refresh.signing.key={GENERATE_YOUR_API_KEY_FOR_REFRESH_TOKENS}
+
+#refresh token expiration time in milliseconds. by default is 30 days
+token.refresh.expiration.date=2592000
 
 logging.level.org.springframework.security={DEBUG or delete this line}
 debug={false/true}
