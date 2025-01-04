@@ -6,46 +6,38 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>im.pupil</groupId>
 	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>api</name>
+	<version>0.0.1</version>
+	<name>im_pupil_api</name>
 	<description>Backend for mobile application</description>
 	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
 		<java.version>17</java.version>
 
-		<database.admin.username>local_admin</database.admin.username>
+<!--		<database.admin.username>local_admin</database.admin.username>-->
+		<database.admin.username>root</database.admin.username>
 		<database.admin.password>1111</database.admin.password>
 
-		<database.user.username>local_user</database.user.username>
+		<database.user.username>${env.DATABASE_USER}</database.user.username>
 		<database.user.password>1111</database.user.password>
 
 		<database.root.username>root</database.root.username>
 		<database.root.password>1111</database.root.password>
 
-		<database.url>jdbc:mariadb://localhost:3306/im_pupil</database.url>
+		<database.url>${env.DATABASE_URL}</database.url>
 		<database.schema.name>im_pupil</database.schema.name>
 
 		<database.migration.plugin.version>10.19.0</database.migration.plugin.version>
 		<model.mapper.version>3.2.1</model.mapper.version>
 		<jjwt.version>0.12.6</jjwt.version>
+		<spring.dock.version>2.6.0</spring.dock.version>
 		<apche.common.lang3.version>3.17.0</apche.common.lang3.version>
 		<project.lombok.version>1.18.34</project.lombok.version>
+		<http.client.version>4.5</http.client.version>
+		<amazon.aws.sdk>2.29.23</amazon.aws.sdk>
 
 	</properties>
 	<dependencies>
@@ -65,12 +57,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
@@ -83,7 +76,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.6.0</version>
+			<version>${spring.dock.version}</version>
 		</dependency>
 
 		<dependency>
@@ -141,28 +134,51 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${http.client.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>${amazon.aws.sdk}</version>
+			<scope>test</scope>
+		</dependency>
+
 
 
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>${database.migration.plugin.version}</version>
 				<configuration>
 					<url>${database.url}</url>
-					<user>${database.admin.username}</user>
-					<password>${database.admin.password}</password>
+<!--					<user>${database.admin.username}</user>-->
+<!--					<password>${database.admin.password}</password>-->
 
 						<!--this root user is for the first app start up, for user creation, after it can be disabled-->
-<!--					<user>${database.root.username}</user>-->
-<!--					<password>${database.root.password}</password>-->
+					<user>${database.root.username}</user>
+					<password>${database.root.password}</password>
 					<cleanDisabled>false</cleanDisabled>
 					<schemas>
 						<schema>im_pupil</schema>
@@ -173,5 +189,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+		<repository>
+			<id>maven_central</id>
+			<name>Maven Central</name>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
+	</repositories>
 </project>

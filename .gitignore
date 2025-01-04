@@ -1,0 +1,37 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+#Ignoring .properties file
+/.properties
+#Ignoring .idea directory
+.idea/
+#Ignoring mvn directory
+.mvn/
+#Ignoring licence file
+HELP.md
+#Ignoring database directory that was created by docker
+mariadb-data/
+#Ignoring env file for docker use
+pupil.env
+#Ignoring application,properies file
+src/main/resources/application.properties
+
+#Ignoring file for db initing
+util/
+
+#Ignoring sh-files
+build.sh
+count.sh
+startup.sh
+startup.bat
+
+#Ignoring db migrations package
+/src/main/resources/db/migration/
+
+#Ignoring target folder
+/target
