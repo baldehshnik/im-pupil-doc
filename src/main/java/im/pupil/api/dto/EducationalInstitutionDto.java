@@ -12,15 +12,18 @@ import java.util.Objects;
  * DTO for {@link im.pupil.api.model.EducationalInstitution}
  */
 public class EducationalInstitutionDto implements Serializable {
+
     @NotNull
     @NotEmpty(message = "Educational institution name should be not empty")
     @NotBlank(message = "Educational institution name should be not blank")
     private String name;
+
     @NotNull
     @Size(max = 10)
     @NotEmpty(message = "Educational institution abbreviation should be not empty")
     @NotBlank(message = "Educational institution abbreviation should be not blank")
     private String abbreviation;
+
     @NotNull
     private Integer type;
 

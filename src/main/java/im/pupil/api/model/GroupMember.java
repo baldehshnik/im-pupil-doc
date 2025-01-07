@@ -7,11 +7,16 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "group_member", schema = "im_pupil", indexes = {
-        @Index(name = "pupil_id", columnList = "pupil_id"),
-        @Index(name = "group_id", columnList = "group_id")
-})
+@Table(
+        name = "group_member",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "pupil_id", columnList = "pupil_id"),
+                @Index(name = "group_id", columnList = "group_id")
+        }
+)
 public class GroupMember {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

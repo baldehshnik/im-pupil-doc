@@ -15,6 +15,7 @@ import java.util.Set;
         @Index(name = "institution_id", columnList = "institution_id")
 })
 public class Practice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

@@ -1,6 +1,8 @@
 package im.pupil.api.controller;
 
 import im.pupil.api.dto.AdminDto;
+import im.pupil.api.dto.GetAdminDto;
+import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.role.RoleNotFoundException;
@@ -16,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -27,6 +32,33 @@ public class AdminController {
     @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
+    }
+
+    @PostMapping("/account/update/access/{adminId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> updateAdminAccountAccessMode(
+            @PathVariable Integer adminId
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        adminService.updateAdminAccess(email, adminId);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success account access mode updating!"));
+    }
+
+    @DeleteMapping("/account/delete/{adminId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> deleteAdminAccount(
+            @PathVariable Integer adminId
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        adminService.deleteAdminAccount(email, adminId);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success account deleting!"));
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GetAdminDto> readAdminsByEducationalInstitution() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return adminService.readAdminsOfEducationInstitution(email);
     }
 
     @Operation(summary = "Get admin account by admin ID")
@@ -46,10 +78,10 @@ public class AdminController {
                     schema = @Schema(implementation = AdminErrorResponse.class))
             }
     )
-    @GetMapping("/account/search/id/{id}")
+    @GetMapping("/account/search/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    AdminDto getAdminAccountById(@PathVariable Integer id) {
-        return adminService.convertToDto(adminService.findAdminById(id));
+    public GetAdminDto getAdminAccountById(@PathVariable Integer id) {
+        return adminService.findAdminById(id);
     }
 
     @Operation(summary = "Get admin account by admin email")
@@ -79,15 +111,16 @@ public class AdminController {
     )
     @ApiResponse(
             responseCode = "409",
-            description = "User doesnt have such a role",
+            description = "User doesn't have such a role",
             content = { @Content (
                     mediaType = "application/json",
                     schema = @Schema(implementation = RoleErrorResponse.class))
             }
     )
-    @GetMapping("/account/search/email/{email}")
+    @GetMapping("/account/search")
     @PreAuthorize("hasRole('ADMIN')")
-    AdminDto getAdminAccountByEmail(@PathVariable String email) {
+    AdminDto getAdminAccountByEmail() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return adminService.convertToDto(adminService.findAdminByEmail(email));
     }
 

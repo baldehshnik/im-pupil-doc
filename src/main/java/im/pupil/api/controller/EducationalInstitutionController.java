@@ -1,6 +1,8 @@
 package im.pupil.api.controller;
 
 import im.pupil.api.dto.AdminDto;
+import im.pupil.api.dto.EducationalInstitutionDto;
+import im.pupil.api.dto.GetEducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
@@ -31,6 +33,13 @@ public class EducationalInstitutionController {
     public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService) {
         this.educationalInstitutionService = educationalInstitutionService;
         this.educationalInstitutionConverters = educationalInstitutionService.getEducationInstitutionAssociatedConverters();
+    }
+
+    @GetMapping("/byNamePart")
+    public List<EducationalInstitutionDto> readEducationalInstitutionsByNamePart(
+            @RequestParam("namePart") String namePart
+    ) {
+        return educationalInstitutionService.getEducationalInstitutionByNamePart(namePart);
     }
 
     @Operation(summary = "Get a list of institution events by institution ID")

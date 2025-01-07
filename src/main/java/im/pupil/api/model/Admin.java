@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
         @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
 })
 public class Admin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

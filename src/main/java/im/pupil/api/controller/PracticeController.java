@@ -1,6 +1,7 @@
 package im.pupil.api.controller;
 
-import im.pupil.api.dto.PracticeDto;
+import im.pupil.api.dto.SuccessAnswer;
+import im.pupil.api.dto.practice.*;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
 import im.pupil.api.exception.educational.institution.response.EducationalInstitutionErrorResponse;
 import im.pupil.api.exception.information.block.InformationBlockAlreadyExistsException;
@@ -22,6 +23,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +34,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/education/practice")
 public class PracticeController {
+
     private final PracticeService practiceService;
     private final RelocationService relocationService;
     private final InformationBlockService informationBlockService;
 
     @Autowired
-    public PracticeController(PracticeService practiceService,
-                              RelocationService relocationService,
-                              InformationBlockService informationBlockService) {
+    public PracticeController(
+            PracticeService practiceService,
+            RelocationService relocationService,
+            InformationBlockService informationBlockService
+    ) {
         this.practiceService = practiceService;
         this.relocationService = relocationService;
         this.informationBlockService = informationBlockService;
@@ -48,7 +54,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "200",
             description = "Found practice",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeDto.class))
             }
@@ -56,21 +62,28 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "404",
             description = "Practice not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
     )
-    @GetMapping("/search/id/{id}")
-    public PracticeDto getPracticeWithPracticeId(@PathVariable Integer id) {
-        return practiceService.convertToDto(practiceService.findPracticeById(id));
+    @GetMapping("/search/{id}")
+    public GetPracticeDto getPracticeWithPracticeId(@PathVariable Integer id) {
+        return practiceService.convertToPracticeDto(practiceService.findPracticeById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> deletePracticeById(@PathVariable Integer id) {
+        practiceService.deletePractice(id);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success practice deleting!"));
     }
 
     @Operation(summary = "Get a list of practices in specific education institution")
     @ApiResponse(
             responseCode = "200",
             description = "Found the list of practices",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeDto.class, type = "array"))
             }
@@ -78,7 +91,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "404",
             description = "Practice not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
@@ -86,18 +99,23 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for practice finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
     )
-    @GetMapping("/search/institution/id/{institution_id}")
-    public List<PracticeDto> getPracticesWithInstitutionId(@PathVariable Integer institution_id) {
-        return practiceService
-                .findPracticesByInstitutionId(institution_id)
-                .stream()
-                .map(practiceService::convertToDto)
+    @GetMapping("/search/byInstitution/{institutionId}")
+    public List<GetListPracticeDto> getPracticesWithInstitutionId(@PathVariable Integer institutionId) {
+        return practiceService.findPracticesByInstitutionId(institutionId).stream()
+                .map(practiceService::convertToListDto)
                 .collect(Collectors.toList());
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<PracticeErrorResponse> handlePracticeNotFoundException(PracticeNotFoundException exception) {
+        PracticeErrorResponse practiceErrorResponse = new PracticeErrorResponse(exception.getMessage());
+
+        return new ResponseEntity<>(practiceErrorResponse, HttpStatus.NOT_FOUND);
     }
 
     @Operation(summary = "Create new practice",
@@ -111,7 +129,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "400",
             description = "Practice not created",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
@@ -119,7 +137,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "406",
             description = "Practice constraints violated",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
@@ -127,7 +145,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "409",
             description = "Relocation already exists",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
@@ -135,7 +153,7 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "409",
             description = "Information block already exists",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = PracticeErrorResponse.class))
             }
@@ -143,73 +161,85 @@ public class PracticeController {
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for practice finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
     )
     @PostMapping("/register")
-    public ResponseEntity<HttpStatus> performPractiseRegistration(@RequestBody @Valid PracticeDto practiceDto,
-                                                                  BindingResult bindingResult) {
-
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> performPractiseRegistration(
+            @RequestBody @Valid CreatePracticeDto practiceDto,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new PracticeNotCreatedException(buildErrorMessageByBindingResult(bindingResult));
         }
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         practiceService.createPracticeWithRelocationInformationBlockWithExistingEducationInstitution(
-                practiceService.convertToEntity(practiceDto),
+                email,
+                practiceDto,
                 practiceDto.getRelocations().stream()
                         .map(relocationService::convertToEntity).collect(Collectors.toSet()),
                 practiceDto.getInformationBlocks().stream()
                         .map(informationBlockService::convertToEntity).collect(Collectors.toSet())
         );
 
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer(null));
     }
 
-    @ExceptionHandler
-    private ResponseEntity<PracticeErrorResponse> handlePracticeNotFoundException(PracticeNotFoundException exception) {
-        PracticeErrorResponse practiceErrorResponse = new PracticeErrorResponse(exception.getMessage());
+    @PostMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> performPracticeRegistration(
+            @RequestBody @Valid UpdatePracticeDto practiceDto
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        practiceService.updatePracticeWithRelocationInformationBlockWithExistingEducationInstitution(
+                email,
+                practiceDto,
+                practiceDto.getRelocations(),
+                practiceDto.getInformationBlocks()
+        );
 
-        return new ResponseEntity<>(practiceErrorResponse, HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer(null));
     }
 
     @ExceptionHandler
     private ResponseEntity<EducationalInstitutionErrorResponse> handleNotFoundEducationInstitutionException(
-            EducationalInstitutionNotFoundException exception){
+            EducationalInstitutionNotFoundException exception) {
         EducationalInstitutionErrorResponse errorResponse = new EducationalInstitutionErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.FAILED_DEPENDENCY);
     }
 
     @ExceptionHandler
-    private ResponseEntity<PracticeErrorResponse> handlePracticeNotCreatedException (
-            PracticeNotCreatedException exception){
+    private ResponseEntity<PracticeErrorResponse> handlePracticeNotCreatedException(
+            PracticeNotCreatedException exception) {
         PracticeErrorResponse errorResponse = new PracticeErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    private ResponseEntity<PracticeErrorResponse> handleConstraintViolationException (
-            ConstraintViolationException exception){
+    private ResponseEntity<PracticeErrorResponse> handleConstraintViolationException(
+            ConstraintViolationException exception) {
         PracticeErrorResponse errorResponse = new PracticeErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler
-    private ResponseEntity<RelocationErrorResponse> handleRelocationAlreadyExistsException (
-            RelocationAlreadyExistsException exception){
+    private ResponseEntity<RelocationErrorResponse> handleRelocationAlreadyExistsException(
+            RelocationAlreadyExistsException exception) {
         RelocationErrorResponse errorResponse = new RelocationErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
-    private ResponseEntity<InformationBlockErrorResponse> handleRelocationAlreadyExistsException (
-            InformationBlockAlreadyExistsException exception){
+    private ResponseEntity<InformationBlockErrorResponse> handleRelocationAlreadyExistsException(
+            InformationBlockAlreadyExistsException exception) {
         InformationBlockErrorResponse errorResponse = new InformationBlockErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);

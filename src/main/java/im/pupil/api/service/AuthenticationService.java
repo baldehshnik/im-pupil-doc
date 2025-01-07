@@ -18,6 +18,7 @@ import java.util.Set;
 
 @Service
 public class AuthenticationService {
+
     private final AdminService adminService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -29,11 +30,17 @@ public class AuthenticationService {
     private final RefreshTokenService refreshTokenService;
 
     @Autowired
-    public AuthenticationService(AdminService adminService,
-                                 JwtService jwtService,
-                                 PasswordEncoder passwordEncoder,
-                                 AuthenticationManager authenticationManager,
-                                 EducationalInstitutionService educationalInstitutionService, UserService userService, UserRoleService userRoleService, RoleService roleService, RefreshTokenService refreshTokenService) {
+    public AuthenticationService(
+            AdminService adminService,
+            JwtService jwtService,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            EducationalInstitutionService educationalInstitutionService,
+            UserService userService,
+            UserRoleService userRoleService,
+            RoleService roleService,
+            RefreshTokenService refreshTokenService
+    ) {
         this.adminService = adminService;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;

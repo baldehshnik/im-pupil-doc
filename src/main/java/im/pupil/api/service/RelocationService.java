@@ -1,6 +1,7 @@
 package im.pupil.api.service;
 
-import im.pupil.api.dto.RelocationDto;
+import im.pupil.api.dto.relocation.RelocationDto;
+import im.pupil.api.dto.relocation.UpdateRelocationDto;
 import im.pupil.api.exception.practice.PracticeNotFoundException;
 import im.pupil.api.exception.relocation.RelocationAlreadyExistsException;
 import im.pupil.api.model.Relocation;
@@ -10,6 +11,10 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,11 +48,58 @@ public class RelocationService {
         relocationRepository.save(relocation);
     }
 
+    public void updateRelocationWithPracticeId(
+            Set<UpdateRelocationDto> relocations,
+            Integer practiceId
+    ) {
+        List<Relocation> savedRelocations = relocationRepository.findAllByPracticeId(practiceId);
+
+        Set<Integer> relocationIds = relocations.stream()
+                .map(UpdateRelocationDto::getId)
+                .collect(Collectors.toSet());
+
+        List<Relocation> relocationsToDelete = savedRelocations.stream()
+                .filter(relocation -> !relocationIds.contains(relocation.getId()))
+                .collect(Collectors.toList());
+
+        relocationRepository.deleteAll(relocationsToDelete);
+
+        for (UpdateRelocationDto updateRelocationDto : relocations) {
+            Relocation relocation = new Relocation();
+            relocation.setName(updateRelocationDto.getName());
+            relocation.setPractice(practiceRepository.findPracticeById(practiceId).orElseThrow(
+                    () -> new PracticeNotFoundException("Practice not found with id: " + practiceId)
+            ));
+
+            if (updateRelocationDto.getId() == null) {
+                relocationRepository.save(relocation);
+            } else {
+                relocation.setId(updateRelocationDto.getId());
+                relocationRepository.save(relocation);
+            }
+        }
+    }
+
     public Relocation convertToEntity(RelocationDto relocationDto) {
         return modelMapper.map(relocationDto, Relocation.class);
     }
-
-    public RelocationDto convertToDto(Relocation relocation) {
-        return modelMapper.map(relocation, RelocationDto.class);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

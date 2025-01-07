@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
         @UniqueConstraint(name = "title", columnNames = {"title", "practice_id"})
 })
 public class InformationBlock {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

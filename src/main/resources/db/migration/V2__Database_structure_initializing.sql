@@ -372,7 +372,9 @@ CREATE TABLE group_member (
                                   ON UPDATE CASCADE,
 
                               FOREIGN KEY (group_id) REFERENCES institution_group(id)
-                                  ON DELETE CASCADE ON UPDATE CASCADE
+                                  ON DELETE CASCADE ON UPDATE CASCADE,
+
+                              UNIQUE(code, group_id)
 );
 
 

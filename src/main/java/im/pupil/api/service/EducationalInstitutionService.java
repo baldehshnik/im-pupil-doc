@@ -27,20 +27,31 @@ public class EducationalInstitutionService {
     final EducationalInstitutionRepository educationalInstitutionRepository;
     final InstitutionEventRepository institutionEventRepository;
     final AdminRepository adminRepository;
+
     final AdminService adminService;
+
     final ModelMapper modelMapper;
 
     @Autowired
-    public EducationalInstitutionService(EducationalInstitutionRepository educationalInstitutionRepository,
-                                         InstitutionEventRepository institutionEventRepository,
-                                         AdminRepository adminRepository,
-                                         AdminService adminService,
-                                         ModelMapper modelMapper) {
+    public EducationalInstitutionService(
+            EducationalInstitutionRepository educationalInstitutionRepository,
+            InstitutionEventRepository institutionEventRepository,
+            AdminRepository adminRepository,
+            AdminService adminService,
+            ModelMapper modelMapper
+    ) {
         this.educationalInstitutionRepository = educationalInstitutionRepository;
         this.institutionEventRepository = institutionEventRepository;
         this.adminRepository = adminRepository;
         this.adminService = adminService;
         this.modelMapper = modelMapper;
+    }
+
+    public List<EducationalInstitutionDto> getEducationalInstitutionByNamePart(String namePart) {
+        List<EducationalInstitution> educationalInstitutions = educationalInstitutionRepository.findTop8ByNameContaining(namePart);
+        return educationalInstitutions.stream()
+                .map(m -> modelMapper.map(m, EducationalInstitutionDto.class))
+                .toList();
     }
 
     public List<InstitutionEvent> getInstitutionEventsOfEducationInstitutionById(Integer institutionId) {
@@ -119,7 +130,8 @@ public class EducationalInstitutionService {
     }
 
     public class EducationInstitutionAssociatedConverters {
-        public EducationInstitutionAssociatedConverters() {}
+        public EducationInstitutionAssociatedConverters() {
+        }
 
         public InstitutionEventDto convertInstitutionEventToDto(InstitutionEvent institutionEvent) {
             return modelMapper.map(institutionEvent, InstitutionEventDto.class);

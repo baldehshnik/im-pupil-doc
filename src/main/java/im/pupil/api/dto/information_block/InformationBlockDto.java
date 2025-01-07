@@ -1,4 +1,4 @@
-package im.pupil.api.dto;
+package im.pupil.api.dto.information_block;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,11 +12,13 @@ import java.util.Objects;
  * DTO for {@link im.pupil.api.model.InformationBlock}
  */
 public class InformationBlockDto implements Serializable {
+
     @NotNull
     @Size(max = 32)
     @NotEmpty(message = "Information block should be not empty")
     @NotBlank(message = "Information block should be not blank")
     private String title;
+
     @NotNull
     @NotEmpty(message = "Content should be not empty")
     @NotBlank

@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(name = "name", columnNames = {"name"})
 })
 public class EducationalInstitution {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

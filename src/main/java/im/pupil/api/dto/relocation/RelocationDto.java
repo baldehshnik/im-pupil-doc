@@ -1,4 +1,4 @@
-package im.pupil.api.dto;
+package im.pupil.api.dto.relocation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,6 +12,7 @@ import java.util.Objects;
  * DTO for {@link im.pupil.api.model.Relocation}
  */
 public class RelocationDto implements Serializable {
+
     @NotNull(message = "Name should be not null")
     @Size(max = 32)
     @NotEmpty(message = "Name should be not empty")

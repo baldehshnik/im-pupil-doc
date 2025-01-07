@@ -7,12 +7,18 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "speciality", schema = "im_pupil", indexes = {
-        @Index(name = "faculty_id", columnList = "faculty_id")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "name", columnNames = {"name", "faculty_id"})
-})
+@Table(
+        name = "speciality",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "faculty_id", columnList = "faculty_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "name", columnNames = {"name", "faculty_id"})
+        }
+)
 public class Speciality {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

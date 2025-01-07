@@ -29,6 +29,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AdminService adminService;
     private final UserService userService;
@@ -46,19 +47,21 @@ public class SecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/webjars/**",
-                                "/actuator/**").permitAll()
-                        .requestMatchers("/test/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**",
+                                        "/swagger-resources/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/webjars/**",
+                                        "/actuator/**").permitAll()
+                                .requestMatchers("/test/**").permitAll()
+                                .requestMatchers("/education/institution/byNamePart").permitAll()
+                                .requestMatchers("/education/practice/search/**").permitAll()
 
-                            .requestMatchers("/admin/**").permitAll()
+                                .requestMatchers("/admin/**").permitAll()
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

@@ -1,7 +1,10 @@
 package im.pupil.api.dto;
 
 import im.pupil.api.model.Admin;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -10,20 +13,25 @@ import java.util.Objects;
  * DTO for {@link Admin}
  */
 public class AdminDto implements Serializable {
+
     @NotNull(message = "Firstname should be not null")
     @Size(max = 32)
     @NotEmpty(message = "Firstname should be not empty")
     @NotBlank(message = "Firstname should be not blank")
     private String firstname;
+
     @NotNull(message = "Lastname should be not null")
     @Size(max = 32)
     @NotEmpty(message = "Lastname should be not empty")
     @NotBlank(message = "Lastname should be not blank")
     private String lastname;
+
     @Size(max = 32)
     private String patronymic;
+
     @NotNull(message = "Access mode should be not null")
     private Integer accessMode;
+
     private String icon;
 
     public AdminDto() {

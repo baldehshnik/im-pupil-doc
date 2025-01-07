@@ -1,5 +1,8 @@
-package im.pupil.api.dto;
+package im.pupil.api.dto.practice;
 
+import im.pupil.api.dto.EducationalInstitutionDto;
+import im.pupil.api.dto.information_block.InformationBlockDto;
+import im.pupil.api.dto.relocation.RelocationDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,40 +17,51 @@ import java.util.Set;
  * DTO for {@link im.pupil.api.model.Practice}
  */
 public class PracticeDto implements Serializable {
+
     private String icon;
+
     @NotNull
     private Boolean payAbility = false;
+
     @NotNull
     @NotEmpty(message = "Description should be not empty")
     @NotBlank(message = "Description should be not empty")
     private String description;
+
     @NotNull
     private Integer workType;
+
     @NotNull
     @Size(max = 32)
     @NotEmpty(message = "Title should be not empty")
     @NotBlank(message = "Title should be not empty")
     private String title;
+
     private String website;
+
     @NotNull(message = "Institution should be not null")
     private EducationalInstitutionDto institution;
+
     @NotNull(message = "Information block should be not null")
     private Set<InformationBlockDto> informationBlocks = new LinkedHashSet<>();
+
     @NotNull(message = "Relocation should be not null")
     private Set<RelocationDto> relocations = new LinkedHashSet<>();
 
     public PracticeDto() {
     }
 
-    public PracticeDto(String icon,
-                       Boolean payAbility,
-                       String description,
-                       Integer workType,
-                       String title,
-                       String website,
-                       EducationalInstitutionDto institution,
-                       Set<InformationBlockDto> informationBlocks,
-                       Set<RelocationDto> relocations) {
+    public PracticeDto(
+            String icon,
+            Boolean payAbility,
+            String description,
+            Integer workType,
+            String title,
+            String website,
+            EducationalInstitutionDto institution,
+            Set<InformationBlockDto> informationBlocks,
+            Set<RelocationDto> relocations
+    ) {
         this.icon = icon;
         this.payAbility = payAbility;
         this.description = description;
