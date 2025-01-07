@@ -1,6 +1,6 @@
 package im.pupil.api.repository;
 
-import im.pupil.api.model.GroupMember;
+import im.pupil.api.model.group.GroupMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

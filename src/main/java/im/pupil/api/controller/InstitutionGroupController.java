@@ -46,6 +46,15 @@ public class InstitutionGroupController {
         institutionGroupService.updateGroup(updateInstitutionGroupDto);
         return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success group updating"));
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> deleteInstitutionGroup(
+        @PathVariable Integer id
+    ) {
+        institutionGroupService.deleteGroup(id);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success group deleting"));
+    }
 }
 
 

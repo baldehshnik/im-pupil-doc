@@ -1,28 +1,26 @@
-package im.pupil.api.model;
+package im.pupil.api.model.event;
 
+import im.pupil.api.model.InstitutionEvent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "event_place", schema = "im_pupil", uniqueConstraints = {
+@Table(name = "event_reward", schema = "im_pupil", uniqueConstraints = {
         @UniqueConstraint(name = "event_id", columnNames = {"event_id"})
 })
-public class EventPlace {
+public class EventReward {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(max = 256)
-    @Column(name = "address", length = 256)
-    private String address;
+    @Column(name = "public_hours")
+    private Double publicHours;
 
-    @Size(max = 256)
-    @Column(name = "place", length = 256)
-    private String place;
+    @Column(name = "work_hours")
+    private Double workHours;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,20 +36,20 @@ public class EventPlace {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public Double getPublicHours() {
+        return publicHours;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPublicHours(Double publicHours) {
+        this.publicHours = publicHours;
     }
 
-    public String getPlace() {
-        return place;
+    public Double getWorkHours() {
+        return workHours;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setWorkHours(Double workHours) {
+        this.workHours = workHours;
     }
 
     public InstitutionEvent getEvent() {

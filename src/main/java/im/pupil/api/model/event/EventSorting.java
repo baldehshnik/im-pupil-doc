@@ -1,5 +1,6 @@
-package im.pupil.api.model;
+package im.pupil.api.model.event;
 
+import im.pupil.api.model.InstitutionEvent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;

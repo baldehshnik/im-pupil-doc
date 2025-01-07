@@ -1,5 +1,6 @@
 package im.pupil.api.model;
 
+import im.pupil.api.model.group.GroupMember;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;

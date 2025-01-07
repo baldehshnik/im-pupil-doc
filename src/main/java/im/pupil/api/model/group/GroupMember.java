@@ -1,5 +1,6 @@
-package im.pupil.api.model;
+package im.pupil.api.model.group;
 
+import im.pupil.api.model.Pupil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -41,6 +42,10 @@ public class GroupMember {
     @Column(name = "code", nullable = false, length = 16)
     private String code;
 
+    @NotNull
+    @Column(name = "isPrefect", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isPrefect;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pupil_id")
     private Pupil pupil;
@@ -50,6 +55,14 @@ public class GroupMember {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "group_id", nullable = false)
     private InstitutionGroup group;
+
+    public @NotNull Boolean getPrefect() {
+        return isPrefect;
+    }
+
+    public void setPrefect(@NotNull Boolean prefect) {
+        isPrefect = prefect;
+    }
 
     public Integer getId() {
         return id;

@@ -365,6 +365,7 @@ CREATE TABLE group_member (
                               lastname varchar(32) NOT null,
                               patronymic varchar(32) null,
                               code varchar(16) NOT null,
+                              is_prefect boolean NOT null DEFAULT false,
                               pupil_id integer null,
                               group_id integer NOT null,
 

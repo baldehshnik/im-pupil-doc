@@ -3,6 +3,7 @@ package im.pupil.api.handler;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
+import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
@@ -41,6 +42,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<AdminErrorResponse> handleSpecialityNotFoundException(SpecialityNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleGroupMemberNotFoundException(GroupMemberNotFoundException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

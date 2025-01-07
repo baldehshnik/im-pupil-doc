@@ -6,8 +6,10 @@ import im.pupil.api.dto.group.UpdateInstitutionGroupDto;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
-import im.pupil.api.model.InstitutionGroup;
+import im.pupil.api.model.group.GroupMember;
+import im.pupil.api.model.group.InstitutionGroup;
 import im.pupil.api.model.Speciality;
+import im.pupil.api.repository.GroupMemberRepository;
 import im.pupil.api.repository.InstitutionGroupRepository;
 import im.pupil.api.repository.SpecialityRepository;
 import org.modelmapper.ModelMapper;
@@ -24,6 +26,7 @@ public class InstitutionGroupService {
 
     private final InstitutionGroupRepository institutionGroupRepository;
     private final SpecialityRepository specialityRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     private final ModelMapper modelMapper;
 
@@ -31,11 +34,13 @@ public class InstitutionGroupService {
             GroupMemberService groupMemberService,
             InstitutionGroupRepository institutionGroupRepository,
             SpecialityRepository specialityRepository,
+            GroupMemberRepository groupMemberRepository,
             ModelMapper modelMapper
     ) {
         this.groupMemberService = groupMemberService;
         this.institutionGroupRepository = institutionGroupRepository;
         this.specialityRepository = specialityRepository;
+        this.groupMemberRepository = groupMemberRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -85,6 +90,13 @@ public class InstitutionGroupService {
         groupMemberService.updateGroupMembers(
                 institutionGroup.getId(), updateInstitutionGroupDto.getGroupMemberDtos()
         );
+    }
+
+    @Transactional
+    public void deleteGroup(Integer id) {
+        List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(id);
+        groupMemberRepository.deleteAll(groupMembers);
+        institutionGroupRepository.deleteById(id);
     }
 }
 

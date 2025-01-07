@@ -1,31 +1,29 @@
-package im.pupil.api.model;
+package im.pupil.api.model.event;
 
+import im.pupil.api.model.InstitutionEvent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
-import java.time.LocalTime;
-
 @Entity
-@Table(name = "event_date", schema = "im_pupil", uniqueConstraints = {
+@Table(name = "event_place", schema = "im_pupil", uniqueConstraints = {
         @UniqueConstraint(name = "event_id", columnNames = {"event_id"})
 })
-public class EventDate {
+public class EventPlace {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "event_date")
-    private Instant eventDate;
+    @Size(max = 256)
+    @Column(name = "address", length = 256)
+    private String address;
 
-    @Column(name = "start_time")
-    private LocalTime startTime;
-
-    @Column(name = "meeting_time")
-    private LocalTime meetingTime;
+    @Size(max = 256)
+    @Column(name = "place", length = 256)
+    private String place;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,28 +39,20 @@ public class EventDate {
         this.id = id;
     }
 
-    public Instant getEventDate() {
-        return eventDate;
+    public String getAddress() {
+        return address;
     }
 
-    public void setEventDate(Instant eventDate) {
-        this.eventDate = eventDate;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    public String getPlace() {
+        return place;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getMeetingTime() {
-        return meetingTime;
-    }
-
-    public void setMeetingTime(LocalTime meetingTime) {
-        this.meetingTime = meetingTime;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public InstitutionEvent getEvent() {
