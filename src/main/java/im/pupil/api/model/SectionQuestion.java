@@ -9,11 +9,16 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.Instant;
 
 @Entity
-@Table(name = "section_question", schema = "im_pupil", indexes = {
-        @Index(name = "pupil_id", columnList = "pupil_id"),
-        @Index(name = "institution_id", columnList = "institution_id")
-})
+@Table(
+        name = "section_question",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "pupil_id", columnList = "pupil_id"),
+                @Index(name = "institution_id", columnList = "institution_id")
+        }
+)
 public class SectionQuestion {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

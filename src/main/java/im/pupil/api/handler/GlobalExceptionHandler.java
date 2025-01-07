@@ -7,6 +7,7 @@ import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
+import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<AdminErrorResponse> handleGroupMemberNotFoundException(GroupMemberNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleSectionNotFoundException(SectionNotFoundException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
