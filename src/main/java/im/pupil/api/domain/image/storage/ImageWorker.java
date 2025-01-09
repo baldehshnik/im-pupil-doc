@@ -79,7 +79,8 @@ public class ImageWorker {
     public enum ImageType {
 
         ACCOUNT("accounts"),
-        ICON("icons");
+        ICON("icons"),
+        ABOUT("about");
 
         private final String directoryName;
 

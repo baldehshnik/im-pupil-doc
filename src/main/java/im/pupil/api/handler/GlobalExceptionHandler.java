@@ -9,6 +9,7 @@ import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundExceptio
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
 import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
+import im.pupil.api.exception.storage.FailedStorageConnectionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,6 +58,12 @@ public class GlobalExceptionHandler {
     private ResponseEntity<AdminErrorResponse> handleSectionNotFoundException(SectionNotFoundException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleFailedStorageConnectionException(FailedStorageConnectionException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 

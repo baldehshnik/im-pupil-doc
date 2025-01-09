@@ -475,3 +475,27 @@ CREATE TABLE guide (
                        FOREIGN KEY (news_id) REFERENCES news(id)
                            ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE about (
+                       id integer PRIMARY KEY AUTO_INCREMENT,
+                       description text null,
+                       icon text null,
+                       institution_id integer NOT null,
+
+                       FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
+                            ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+

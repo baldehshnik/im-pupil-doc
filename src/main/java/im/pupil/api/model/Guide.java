@@ -7,10 +7,15 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "guide", schema = "im_pupil", indexes = {
-        @Index(name = "news_id", columnList = "news_id")
-})
+@Table(
+        name = "guide",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "news_id", columnList = "news_id")
+        }
+)
 public class Guide {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
