@@ -20,6 +20,12 @@ public interface InstitutionGroupRepository extends JpaRepository<InstitutionGro
             @Param("id") Integer specialityId,
             @Param("name") String name
     );
+
+    @Query("SELECT g FROM InstitutionGroup g WHERE g.speciality.faculty.institution.id = :id AND g.name LIKE CONCAT('%', :namePart, '%')")
+    List<InstitutionGroup> findInstitutionGroupByNamePart(
+            @Param("namePart") String namePart,
+            @Param("id") Integer institutionId
+    );
 }
 
 

@@ -1,68 +1,44 @@
-package im.pupil.api.model;
+package im.pupil.api.dto.lesson;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
+import java.io.Serializable;
 import java.time.LocalTime;
 
-@Entity
-@Table(
-        name = "lesson",
-        schema = "im_pupil",
-        indexes = {
-                @Index(name = "schedule_id", columnList = "schedule_id")
-        }
-)
-public class Lesson {
+public class GetLessonDto implements Serializable {
 
-    @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Size(max = 64)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 64)
     private String name;
-
-    @NotNull
-    @Column(name = "start", nullable = false)
     private LocalTime start;
-
-    @NotNull
-    @Column(name = "end", nullable = false)
     private LocalTime end;
-
-    @Size(max = 128)
-    @NotNull
-    @Column(name = "teacher", nullable = false, length = 128)
     private String teacher;
-
-    @Size(max = 10)
-    @NotNull
-    @Column(name = "audience", nullable = false, length = 10)
     private String audience;
-
-    @NotNull
-    @Column(name = "type", nullable = false)
     private Integer type;
-
-    @NotNull
-    @Column(name = "dayofweek", nullable = false)
     private Integer dayofweek;
-
-    @NotNull
-    @Column(name = "week_type", nullable = false)
     private Integer weekType;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
+    public GetLessonDto() {
+    }
+
+    public GetLessonDto(
+            Integer id,
+            String name,
+            LocalTime start,
+            LocalTime end,
+            String teacher,
+            String audience,
+            Integer type,
+            Integer dayofweek,
+            Integer weekType
+    ) {
+        this.id = id;
+        this.name = name;
+        this.start = start;
+        this.end = end;
+        this.teacher = teacher;
+        this.audience = audience;
+        this.type = type;
+        this.dayofweek = dayofweek;
+        this.weekType = weekType;
+    }
 
     public Integer getId() {
         return id;
@@ -135,13 +111,27 @@ public class Lesson {
     public void setWeekType(Integer weekType) {
         this.weekType = weekType;
     }
-
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -11,12 +11,18 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.Instant;
 
 @Entity
-@Table(name = "schedule", schema = "im_pupil", indexes = {
-        @Index(name = "group_id", columnList = "group_id")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "name", columnNames = {"name", "group_id"})
-})
+@Table(
+        name = "schedule",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "group_id", columnList = "group_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "name", columnNames = {"name", "group_id"})
+        }
+)
 public class Schedule {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

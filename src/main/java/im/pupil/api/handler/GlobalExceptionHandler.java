@@ -1,12 +1,13 @@
 package im.pupil.api.handler;
 
-import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
+import im.pupil.api.exception.schedule.LessonNotFoundException;
+import im.pupil.api.exception.schedule.ScheduleNotFoundException;
 import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
 import im.pupil.api.exception.storage.FailedStorageConnectionException;
@@ -64,6 +65,18 @@ public class GlobalExceptionHandler {
     private ResponseEntity<AdminErrorResponse> handleFailedStorageConnectionException(FailedStorageConnectionException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleScheduleNotFoundException(ScheduleNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleLessonNotFoundException(LessonNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
 

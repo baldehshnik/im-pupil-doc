@@ -29,6 +29,15 @@ public class InstitutionGroupController {
         return institutionGroupService.readGroupsBySpecialityId(id);
     }
 
+    @GetMapping("/byNamePart")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GetInstitutionGroup> readInstitutionGroupsByNamePart(
+            @RequestParam("institutionId") Integer id,
+            @RequestParam("namePart") String namePart
+    ) {
+        return institutionGroupService.readGroupByNamePart(id, namePart);
+    }
+
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SuccessAnswer> createInstitutionGroup(

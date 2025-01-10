@@ -54,6 +54,17 @@ public class InstitutionGroupService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<GetInstitutionGroup> readGroupByNamePart(
+            Integer institutionId,
+            String namePart
+    ) {
+        List<InstitutionGroup> institutionGroups = institutionGroupRepository.findInstitutionGroupByNamePart(namePart, institutionId);
+        return institutionGroups.stream()
+                .map(m -> modelMapper.map(m, GetInstitutionGroup.class))
+                .toList();
+    }
+
     @Transactional
     public void createGroup(
         CreateInstitutionGroupDto createInstitutionGroupDto
