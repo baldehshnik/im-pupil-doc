@@ -1,13 +1,13 @@
 package im.pupil.api.service;
 
-import im.pupil.api.dto.AdminDto;
-import im.pupil.api.dto.EducationalInstitutionDto;
+import im.pupil.api.dto.admin.AdminDto;
+import im.pupil.api.dto.institution.EducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
 import im.pupil.api.exception.insitution.event.InstitutionEventNotFoundException;
 import im.pupil.api.model.Admin;
-import im.pupil.api.model.EducationalInstitution;
+import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.model.InstitutionEvent;
 import im.pupil.api.repository.AdminRepository;
 import im.pupil.api.repository.EducationalInstitutionRepository;

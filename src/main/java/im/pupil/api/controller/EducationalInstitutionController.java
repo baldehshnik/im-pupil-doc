@@ -1,8 +1,7 @@
 package im.pupil.api.controller;
 
-import im.pupil.api.dto.AdminDto;
-import im.pupil.api.dto.EducationalInstitutionDto;
-import im.pupil.api.dto.GetEducationalInstitutionDto;
+import im.pupil.api.dto.admin.AdminDto;
+import im.pupil.api.dto.institution.EducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;

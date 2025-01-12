@@ -1,6 +1,6 @@
 package im.pupil.api.dto.practice;
 
-import im.pupil.api.dto.EducationalInstitutionDto;
+import im.pupil.api.dto.institution.EducationalInstitutionDto;
 import im.pupil.api.dto.information_block.InformationBlockDto;
 import im.pupil.api.dto.relocation.RelocationDto;
 import jakarta.validation.constraints.NotBlank;

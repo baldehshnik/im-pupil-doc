@@ -2,12 +2,13 @@ package im.pupil.api.handler;
 
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
+import im.pupil.api.exception.exam.ExamAlreadyExistsException;
+import im.pupil.api.exception.exam.ExamNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
-import im.pupil.api.exception.schedule.LessonNotFoundException;
-import im.pupil.api.exception.schedule.ScheduleNotFoundException;
+import im.pupil.api.exception.schedule.*;
 import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
 import im.pupil.api.exception.storage.FailedStorageConnectionException;
@@ -77,6 +78,36 @@ public class GlobalExceptionHandler {
     private ResponseEntity<AdminErrorResponse> handleLessonNotFoundException(LessonNotFoundException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleScheduleWasNotStartedException(ScheduleWasNotStartedException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleScheduleIsNotActiveException(ScheduleIsNotActiveException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleGroupMemberAlreadyHasAPassException(GroupMemberAlreadyHasAPassException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleExamNotFoundException(ExamNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleExamAlreadyExistsException(ExamAlreadyExistsException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }
 

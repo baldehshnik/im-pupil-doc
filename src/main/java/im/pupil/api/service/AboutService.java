@@ -3,7 +3,7 @@ package im.pupil.api.service;
 import im.pupil.api.domain.image.storage.ImageWorker;
 import im.pupil.api.dto.about.GetAboutDto;
 import im.pupil.api.model.Admin;
-import im.pupil.api.model.EducationalInstitution;
+import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.model.about.About;
 import im.pupil.api.repository.AboutRepository;
 import jakarta.annotation.Nullable;

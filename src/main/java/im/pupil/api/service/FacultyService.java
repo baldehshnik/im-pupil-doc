@@ -2,8 +2,8 @@ package im.pupil.api.service;
 
 import im.pupil.api.dto.faculty.GetFacultyDto;
 import im.pupil.api.model.Admin;
-import im.pupil.api.model.EducationalInstitution;
-import im.pupil.api.model.Faculty;
+import im.pupil.api.model.institution.EducationalInstitution;
+import im.pupil.api.model.institution.Faculty;
 import im.pupil.api.repository.FacultyRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

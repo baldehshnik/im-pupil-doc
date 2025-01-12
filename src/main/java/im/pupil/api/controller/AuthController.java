@@ -1,6 +1,6 @@
 package im.pupil.api.controller;
 
-import im.pupil.api.dto.RefreshTokenRequestDto;
+import im.pupil.api.dto.auth.RefreshTokenRequestDto;
 import im.pupil.api.exception.refresh.token.RefreshTokenNotFound;
 import im.pupil.api.model.RefreshToken;
 import im.pupil.api.security.dto.JwtAuthenticationResponseDto;

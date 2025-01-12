@@ -1,43 +1,84 @@
 package im.pupil.api.service;
 
-import im.pupil.api.dto.NewsDto;
+import im.pupil.api.dto.news.GetGuideDto;
+import im.pupil.api.dto.news.GetNewsInfoDto;
+import im.pupil.api.dto.news.GetNewsListDto;
 import im.pupil.api.exception.news.NewsNotFoundException;
-import im.pupil.api.model.News;
+import im.pupil.api.model.news.Guide;
+import im.pupil.api.model.news.News;
+import im.pupil.api.repository.GuideRepository;
 import im.pupil.api.repository.NewsRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class NewsService {
-    NewsRepository newsRepository;
-    ModelMapper modelMapper;
 
-    @Autowired
-    public NewsService(NewsRepository newsRepository, ModelMapper modelMapper) {
+    private final NewsRepository newsRepository;
+    private final GuideRepository guideRepository;
+
+    private final ModelMapper modelMapper;
+
+    public NewsService(
+            NewsRepository newsRepository,
+            GuideRepository guideRepository,
+            ModelMapper modelMapper
+    ) {
         this.newsRepository = newsRepository;
+        this.guideRepository = guideRepository;
         this.modelMapper = modelMapper;
     }
 
-    public List<News> findAll() {
+    @Transactional(readOnly = true)
+    public List<GetNewsListDto> findAll() {
         List<News> result = newsRepository.findAll();
-
-        if (result.isEmpty()) {
-            throw new NewsNotFoundException("No news found");
-        }
-
-        return result;
+        return result.stream()
+                .map(this::convertToNewsListDto)
+                .toList();
     }
 
-    public NewsDto convertToDto (News news) {
-        return modelMapper.map(news, NewsDto.class);
+    @Transactional(readOnly = true)
+    public GetNewsInfoDto findById(Integer id) {
+        Optional<News> optionalNews = newsRepository.findById(id);
+        if (optionalNews.isEmpty()) throw new NewsNotFoundException();
+
+        List<GetGuideDto> guides = guideRepository.findByNewsId(optionalNews.get().getId()).stream()
+                .map(this::convertToGuideDto)
+                .toList();
+
+        GetNewsInfoDto getNewsInfoDto = convertToNewsInfoDto(optionalNews.get());
+        getNewsInfoDto.setGuides(guides);
+
+        return getNewsInfoDto;
     }
 
-    public News convertToNews(NewsDto newsDto) {
-        return modelMapper.map(newsDto, News.class);
+    private GetNewsListDto convertToNewsListDto(News news) {
+        return modelMapper.map(news, GetNewsListDto.class);
+    }
+
+    private GetNewsInfoDto convertToNewsInfoDto(News news) {
+        return modelMapper.map(news, GetNewsInfoDto.class);
+    }
+
+    private GetGuideDto convertToGuideDto(Guide guide) {
+        return modelMapper.map(guide, GetGuideDto.class);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

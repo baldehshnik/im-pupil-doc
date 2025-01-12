@@ -8,7 +8,7 @@ import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyEx
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
 import im.pupil.api.model.group.GroupMember;
 import im.pupil.api.model.group.InstitutionGroup;
-import im.pupil.api.model.Speciality;
+import im.pupil.api.model.institution.Speciality;
 import im.pupil.api.repository.GroupMemberRepository;
 import im.pupil.api.repository.InstitutionGroupRepository;
 import im.pupil.api.repository.SpecialityRepository;

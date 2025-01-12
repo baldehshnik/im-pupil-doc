@@ -1,7 +1,7 @@
 package im.pupil.api.service;
 
 import im.pupil.api.dto.speciality.GetSpecialityDto;
-import im.pupil.api.model.Speciality;
+import im.pupil.api.model.institution.Speciality;
 import im.pupil.api.repository.SpecialityRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -5,6 +5,7 @@ import im.pupil.api.dto.practice.*;
 import im.pupil.api.dto.relocation.UpdateRelocationDto;
 import im.pupil.api.exception.practice.PracticeNotFoundException;
 import im.pupil.api.model.*;
+import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.repository.PracticeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

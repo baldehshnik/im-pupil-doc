@@ -3,6 +3,7 @@ package im.pupil.api.service;
 import im.pupil.api.exception.refresh.token.RefreshTokenNotFound;
 import im.pupil.api.exception.security.sign.up.admin.AdminAlreadyRegisteredException;
 import im.pupil.api.model.*;
+import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.security.RolesEnum;
 import im.pupil.api.security.dto.JwtAuthenticationResponseDto;
 import im.pupil.api.security.dto.SignInRequestDto;

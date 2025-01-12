@@ -1,6 +1,6 @@
 package im.pupil.api.model.about;
 
-import im.pupil.api.model.EducationalInstitution;
+import im.pupil.api.model.institution.EducationalInstitution;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;

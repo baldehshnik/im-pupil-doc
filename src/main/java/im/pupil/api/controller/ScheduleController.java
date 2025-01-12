@@ -1,14 +1,17 @@
 package im.pupil.api.controller;
 
 import im.pupil.api.dto.SuccessAnswer;
+import im.pupil.api.dto.lesson.GetLessonDto;
+import im.pupil.api.dto.lesson.GetLessonWithPassStatusDto;
 import im.pupil.api.dto.schedule.CreateNewScheduleDto;
 import im.pupil.api.dto.schedule.GetScheduleDto;
 import im.pupil.api.dto.schedule.UpdateScheduleDto;
-import im.pupil.api.service.ScheduleService;
+import im.pupil.api.service.schedule.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,10 +24,28 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
+    @GetMapping("/withPasses")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GetLessonWithPassStatusDto> readLessonsWithPassStatus(
+            @RequestParam("groupMemberId") Integer groupMemberId,
+            @RequestParam("date") LocalDate date
+    ) {
+        return scheduleService.readLessonsWithPassStatus(groupMemberId, date);
+    }
+
+    @GetMapping("/today")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GetLessonDto> readCurrentSchedule(
+            @RequestParam("groupId") Integer id,
+            @RequestParam("currentDate") LocalDate currentDate
+    ) {
+        return scheduleService.readCurrentSchedule(id, currentDate);
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<GetScheduleDto> readSchedulesByGroupId(
-        @RequestParam("groupId") Integer id
+            @RequestParam("groupId") Integer id
     ) {
         return scheduleService.readSchedulesByGroupId(id);
     }
@@ -50,7 +71,7 @@ public class ScheduleController {
     @PostMapping("/current")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SuccessAnswer> makeScheduleAsACurrent(
-        @RequestParam("scheduleId") Integer scheduleId
+            @RequestParam("scheduleId") Integer scheduleId
     ) {
         scheduleService.makeScheduleAsACurrent(scheduleId);
         return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success status updating"));

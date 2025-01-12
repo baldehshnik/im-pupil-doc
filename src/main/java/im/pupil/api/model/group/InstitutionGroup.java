@@ -1,6 +1,6 @@
 package im.pupil.api.model.group;
 
-import im.pupil.api.model.Speciality;
+import im.pupil.api.model.institution.Speciality;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

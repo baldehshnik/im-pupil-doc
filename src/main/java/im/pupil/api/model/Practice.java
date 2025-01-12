@@ -1,6 +1,7 @@
 package im.pupil.api.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import im.pupil.api.model.institution.EducationalInstitution;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,7 +1,7 @@
 package im.pupil.api.service;
 
-import im.pupil.api.dto.AdminDto;
-import im.pupil.api.dto.GetAdminDto;
+import im.pupil.api.dto.admin.AdminDto;
+import im.pupil.api.dto.admin.GetAdminDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.model.Admin;
