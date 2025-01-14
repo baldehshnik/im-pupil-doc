@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignInRequestDto {
+
     @Size(max = 255, message = "Length of email should be shorter than 255 characters")
     @NotNull
     @NotBlank(message = "Email should be not empty")

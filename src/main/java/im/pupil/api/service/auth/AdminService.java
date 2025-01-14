@@ -1,4 +1,4 @@
-package im.pupil.api.service;
+package im.pupil.api.service.auth;
 
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.admin.GetAdminDto;
@@ -10,6 +10,9 @@ import im.pupil.api.model.User;
 import im.pupil.api.repository.AdminRepository;
 import im.pupil.api.repository.UserRepository;
 import im.pupil.api.security.RolesEnum;
+import im.pupil.api.service.RoleService;
+import im.pupil.api.service.UserRoleService;
+import im.pupil.api.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

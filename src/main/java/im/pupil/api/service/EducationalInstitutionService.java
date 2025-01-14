@@ -12,6 +12,7 @@ import im.pupil.api.model.InstitutionEvent;
 import im.pupil.api.repository.AdminRepository;
 import im.pupil.api.repository.EducationalInstitutionRepository;
 import im.pupil.api.repository.InstitutionEventRepository;
+import im.pupil.api.service.auth.AdminService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

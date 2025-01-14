@@ -1,7 +1,7 @@
 package im.pupil.api.config;
 
 import im.pupil.api.security.JwtAuthenticationFilter;
-import im.pupil.api.service.AdminService;
+import im.pupil.api.service.auth.AdminService;
 import im.pupil.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -4,13 +4,15 @@ import im.pupil.api.dto.group_member.*;
 import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
+import im.pupil.api.model.Pupil;
+import im.pupil.api.model.group.GroupMember;
+import im.pupil.api.model.group.InstitutionGroup;
 import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.model.institution.Faculty;
 import im.pupil.api.model.institution.Speciality;
-import im.pupil.api.model.group.GroupMember;
-import im.pupil.api.model.group.InstitutionGroup;
 import im.pupil.api.repository.GroupMemberRepository;
 import im.pupil.api.repository.InstitutionGroupRepository;
+import im.pupil.api.repository.PupilRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,25 +27,30 @@ public class GroupMemberService {
 
     private final GroupMemberRepository groupMemberRepository;
     private final InstitutionGroupRepository institutionGroupRepository;
+    private final PupilRepository pupilRepository;
 
     private final ModelMapper modelMapper;
 
     public GroupMemberService(
             GroupMemberRepository groupMemberRepository,
             InstitutionGroupRepository institutionGroupRepository,
+            PupilRepository pupilRepository,
             ModelMapper modelMapper
     ) {
         this.groupMemberRepository = groupMemberRepository;
         this.institutionGroupRepository = institutionGroupRepository;
+        this.pupilRepository = pupilRepository;
         this.modelMapper = modelMapper;
     }
 
     @Transactional(readOnly = true)
     public CanBeAddedGroupMemberDto canBeAddedCheck(
-            Integer groupId,
-            AddGroupMemberDto addGroupMemberDto
+            CheckGroupMemberDto groupMemberDto
     ) {
-        Optional<GroupMember> groupMember = groupMemberRepository.readGroupMember(addGroupMemberDto.getCode(), groupId);
+        Optional<GroupMember> groupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                groupMemberDto.getCode(),
+                groupMemberDto.getInstitutionId()
+        );
         return new CanBeAddedGroupMemberDto(groupMember.isEmpty());
     }
 
@@ -69,7 +76,7 @@ public class GroupMemberService {
 
     @Transactional(readOnly = true)
     public List<GetGroupMemberDto> readGroupMembers(
-        Integer groupId
+            Integer groupId
     ) {
         List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(groupId);
         return groupMembers.stream()
@@ -115,9 +122,13 @@ public class GroupMemberService {
         if (institutionGroup.isEmpty()) throw new InstitutionGroupNotFoundException();
         groupMember.setGroup(institutionGroup.get());
 
-        if (groupMemberRepository.readGroupMember(addGroupMemberDto.getCode(), groupId).isPresent()) {
+        Integer institutionId = institutionGroup.get().getSpeciality().getFaculty().getInstitution().getId();
+        if (groupMemberRepository.readGroupMemberOfInstitutionByCode(addGroupMemberDto.getCode(), institutionId).isPresent()) {
             throw new GroupMemberWasAddedYearlyException();
         }
+
+        Optional<Pupil> optionalPupil = pupilRepository.findRegisteredByCodeAndInstitutionId(addGroupMemberDto.getCode(), institutionId);
+        optionalPupil.ifPresent(groupMember::setPupil);
 
         groupMemberRepository.save(groupMember);
     }
@@ -161,6 +172,10 @@ public class GroupMemberService {
         Optional<InstitutionGroup> institutionGroup = institutionGroupRepository.findById(groupId);
         if (institutionGroup.isEmpty()) throw new InstitutionGroupNotFoundException();
         groupMember.setGroup(institutionGroup.get());
+
+        Integer institutionId = institutionGroup.get().getSpeciality().getFaculty().getInstitution().getId();
+        Optional<Pupil> optionalPupil = pupilRepository.findRegisteredByCodeAndInstitutionId(groupMember.getCode(), institutionId);
+        optionalPupil.ifPresent(groupMember::setPupil);
 
         groupMemberRepository.save(groupMember);
     }

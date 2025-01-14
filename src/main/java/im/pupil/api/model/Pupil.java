@@ -4,16 +4,22 @@ import im.pupil.api.model.institution.EducationalInstitution;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "pupil", schema = "im_pupil", indexes = {
-        @Index(name = "institution_id", columnList = "institution_id")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "code", columnNames = {"code", "institution_id"}),
-        @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
-})
+@Table(
+        name = "pupil",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "institution_id", columnList = "institution_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "code", columnNames = {"code", "institution_id"}),
+                @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
+        }
+)
 public class Pupil {
 
     @Id
@@ -31,7 +37,12 @@ public class Pupil {
     private String code;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ColumnDefault("-1")
+    @Column(name = "status", nullable = false)
+    private Integer status;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
     private EducationalInstitution institution;
@@ -82,4 +93,32 @@ public class Pupil {
         this.user = user;
     }
 
+    public @NotNull Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(@NotNull Integer status) {
+        this.status = status;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

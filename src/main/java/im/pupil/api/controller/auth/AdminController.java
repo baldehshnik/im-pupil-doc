@@ -1,4 +1,4 @@
-package im.pupil.api.controller;
+package im.pupil.api.controller.auth;
 
 import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.dto.admin.AdminDto;
@@ -9,7 +9,7 @@ import im.pupil.api.exception.role.RoleNotFoundException;
 import im.pupil.api.exception.role.response.RoleErrorResponse;
 import im.pupil.api.exception.user.UserNotFoundException;
 import im.pupil.api.exception.user.response.UserErrorResponse;
-import im.pupil.api.service.AdminService;
+import im.pupil.api.service.auth.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

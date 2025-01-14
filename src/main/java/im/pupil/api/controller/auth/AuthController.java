@@ -1,17 +1,21 @@
-package im.pupil.api.controller;
+package im.pupil.api.controller.auth;
 
+import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.dto.auth.RefreshTokenRequestDto;
+import im.pupil.api.dto.pupil.AddPupilDto;
 import im.pupil.api.exception.refresh.token.RefreshTokenNotFound;
 import im.pupil.api.model.RefreshToken;
 import im.pupil.api.security.dto.JwtAuthenticationResponseDto;
 import im.pupil.api.security.dto.SignInRequestDto;
 import im.pupil.api.security.dto.admin.SignUpAdminRequestDto;
-import im.pupil.api.service.AuthenticationService;
 import im.pupil.api.service.JwtService;
 import im.pupil.api.service.RefreshTokenService;
 import im.pupil.api.service.UserService;
+import im.pupil.api.service.auth.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +40,22 @@ public class AuthController {
         this.refreshTokenService = refreshTokenService;
         this.jwtService = jwtService;
         this.userService = userService;
+    }
+
+    @Operation(summary = "Create new account for pupil")
+    @PostMapping("/pupil/sign-up")
+    public ResponseEntity<SuccessAnswer> pupilSignUp(
+            @Valid @NotNull @RequestBody AddPupilDto pupil
+    ) {
+        authenticationService.pupilSignUp(pupil);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success pupil registration"));
+    }
+
+    @PostMapping("/pupil/sign-in")
+    public JwtAuthenticationResponseDto pupilSignIn(
+            @Valid @RequestBody SignInRequestDto request
+    ) {
+        return authenticationService.pupilSignIn(request);
     }
 
     @Operation(summary = "Create new account for admin")

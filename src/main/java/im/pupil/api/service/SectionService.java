@@ -7,6 +7,7 @@ import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.model.Admin;
 import im.pupil.api.model.Section;
 import im.pupil.api.repository.SectionRepository;
+import im.pupil.api.service.auth.AdminService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

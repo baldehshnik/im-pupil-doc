@@ -6,6 +6,7 @@ import im.pupil.api.model.Admin;
 import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.model.about.About;
 import im.pupil.api.repository.AboutRepository;
+import im.pupil.api.service.auth.AdminService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;

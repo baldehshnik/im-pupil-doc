@@ -12,10 +12,10 @@ import java.util.Optional;
 @Repository
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Integer> {
 
-    @Query("SELECT gm FROM GroupMember gm WHERE gm.code = :code AND gm.group.id = :id")
-    Optional<GroupMember> readGroupMember(
+    @Query("SELECT gm FROM GroupMember gm WHERE gm.code = :code AND gm.group.speciality.faculty.institution.id = :id")
+    Optional<GroupMember> readGroupMemberOfInstitutionByCode(
             @Param("code") String code,
-            @Param("id") Integer groupId
+            @Param("id") Integer institutionId
     );
 
     @Query("SELECT gm FROM GroupMember gm WHERE gm.group.id = :id")

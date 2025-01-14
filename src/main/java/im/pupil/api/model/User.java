@@ -3,15 +3,11 @@ package im.pupil.api.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Entity
 @Table(
@@ -40,6 +36,15 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
+
+    public User() {}
+
+    public User(Integer id, String email, String password, Set<UserRole> userRoles) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.userRoles = userRoles;
+    }
 
     public Integer getId() {
         return id;

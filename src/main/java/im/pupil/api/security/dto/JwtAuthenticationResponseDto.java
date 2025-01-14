@@ -1,17 +1,16 @@
 package im.pupil.api.security.dto;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Builder
+@NoArgsConstructor
 public class JwtAuthenticationResponseDto implements Serializable {
 
     private String accessToken;
     private String refreshToken;
-
-    public JwtAuthenticationResponseDto() {
-    }
 
     public JwtAuthenticationResponseDto(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
@@ -34,3 +33,19 @@ public class JwtAuthenticationResponseDto implements Serializable {
         this.refreshToken = refreshToken;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

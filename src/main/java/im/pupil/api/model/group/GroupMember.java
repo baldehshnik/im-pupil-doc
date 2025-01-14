@@ -14,7 +14,8 @@ import org.hibernate.annotations.OnDeleteAction;
         indexes = {
                 @Index(name = "pupil_id", columnList = "pupil_id"),
                 @Index(name = "group_id", columnList = "group_id")
-        }
+        },
+        uniqueConstraints = @UniqueConstraint(columnNames = {"code", "institution_id"})
 )
 public class GroupMember {
 
@@ -120,4 +121,26 @@ public class GroupMember {
         this.group = group;
     }
 
+    @Transient
+    public Integer getInstitutionId() {
+        return group != null && group.getSpeciality() != null && group.getSpeciality().getFaculty() != null
+                ? group.getSpeciality().getFaculty().getInstitution().getId()
+                : null;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

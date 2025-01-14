@@ -74,6 +74,24 @@ public class NotificationService {
             notificationRepository.save(notification);
         });
     }
+
+    @Transactional
+    public void addNewPupilNotification(
+            String code,
+            EducationalInstitution educationalInstitution
+    ) {
+        List<Admin> admins = adminRepository.findByInstitutionIdAndTeacherAccess(educationalInstitution.getId());
+        admins.forEach(m -> {
+            Notification notification = new Notification();
+            notification.setIcon(NotificationIconsProvider.NEW_STUDENT.getLink());
+            notification.setTitle(NotificationMessagesProvider.NEW_STUDENT_TITLE.getMessage());
+            notification.setDescription(NotificationMessagesProvider.NEW_STUDENT_DESCRIPTION.getMessage() + code);
+            notification.setInstitution(educationalInstitution);
+            notification.setDateTime(Instant.now());
+            notification.setAdmin(m);
+            notificationRepository.save(notification);
+        });
+    }
 }
 
 

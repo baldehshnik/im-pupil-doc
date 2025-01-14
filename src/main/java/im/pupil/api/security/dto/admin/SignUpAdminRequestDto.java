@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignUpAdminRequestDto {
+
     @Size(max = 32, message = "Length of firstname should be shorter than 32 characters")
     @NotNull
     @NotBlank(message = "Firstname should be not empty")

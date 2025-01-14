@@ -5,6 +5,7 @@ import im.pupil.api.model.Admin;
 import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.model.institution.Faculty;
 import im.pupil.api.repository.FacultyRepository;
+import im.pupil.api.service.auth.AdminService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

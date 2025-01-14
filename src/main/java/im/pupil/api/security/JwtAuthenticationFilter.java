@@ -1,6 +1,6 @@
 package im.pupil.api.security;
 
-import im.pupil.api.service.AdminService;
+import im.pupil.api.service.auth.AdminService;
 import im.pupil.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,7 +1,5 @@
-package im.pupil.api.dto;
+package im.pupil.api.dto.pupil;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 

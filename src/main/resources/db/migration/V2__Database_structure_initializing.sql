@@ -221,6 +221,7 @@ CREATE TABLE pupil (
                        code varchar(16) NOT null,
                        institution_id integer NOT null,
                        user_id integer unique not null,
+                       status integer not null default -1,
 
                        FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                            ON UPDATE CASCADE ON DELETE CASCADE,

@@ -12,6 +12,8 @@ import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundExceptio
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
 import im.pupil.api.exception.notification.NotificationNotFoundException;
 import im.pupil.api.exception.parsing.DataParsingException;
+import im.pupil.api.exception.pupil.PupilAlreadyRegisteredException;
+import im.pupil.api.exception.pupil.PupilNotConfirmedYetException;
 import im.pupil.api.exception.schedule.*;
 import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
@@ -150,6 +152,18 @@ public class GlobalExceptionHandler {
     private ResponseEntity<AdminErrorResponse> handleDataParsingException(DataParsingException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handlePupilAlreadyRegisteredException(PupilAlreadyRegisteredException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handlePupilNotConfirmedYetException(PupilNotConfirmedYetException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }
 

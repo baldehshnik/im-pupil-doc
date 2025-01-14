@@ -16,8 +16,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class RefreshTokenRequestDto implements Serializable {
+
     @NotNull
     @NotBlank
     @Size(max = 256)
     private String token;
+
+    public @NotNull @NotBlank @Size(max = 256) String getToken() {
+        return token;
+    }
+
+    public void setToken(@NotNull @NotBlank @Size(max = 256) String token) {
+        this.token = token;
+    }
 }
