@@ -1,6 +1,7 @@
 package im.pupil.api.model;
 
 import im.pupil.api.model.institution.EducationalInstitution;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,12 +12,17 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.Instant;
 
 @Entity
-@Table(name = "notification", schema = "im_pupil", indexes = {
-        @Index(name = "pupil_id", columnList = "pupil_id"),
-        @Index(name = "admin_id", columnList = "admin_id"),
-        @Index(name = "institution_id", columnList = "institution_id")
-})
+@Table(
+        name = "notification",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "pupil_id", columnList = "pupil_id"),
+                @Index(name = "admin_id", columnList = "admin_id"),
+                @Index(name = "institution_id", columnList = "institution_id")
+        }
+)
 public class Notification {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

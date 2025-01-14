@@ -1,17 +1,23 @@
 package im.pupil.api.handler;
 
+import im.pupil.api.exception.admin.AdminNotConfirmedYetException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
+import im.pupil.api.exception.event.InstitutionEventNotFoundException;
 import im.pupil.api.exception.exam.ExamAlreadyExistsException;
 import im.pupil.api.exception.exam.ExamNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.GroupMemberWasAddedYearlyException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
+import im.pupil.api.exception.notification.NotificationNotFoundException;
+import im.pupil.api.exception.parsing.DataParsingException;
 import im.pupil.api.exception.schedule.*;
 import im.pupil.api.exception.section.SectionNotFoundException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
 import im.pupil.api.exception.storage.FailedStorageConnectionException;
+import im.pupil.api.exception.user.IncorrectDataException;
+import im.pupil.api.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -108,6 +114,42 @@ public class GlobalExceptionHandler {
     private ResponseEntity<AdminErrorResponse> handleExamAlreadyExistsException(ExamAlreadyExistsException exception) {
         AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleAdminNotConfirmedYetException(AdminNotConfirmedYetException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleIncorrectDataException(IncorrectDataException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleNotificationNotFoundException(NotificationNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleInstitutionEventNotFoundException(InstitutionEventNotFoundException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AdminErrorResponse> handleDataParsingException(DataParsingException exception) {
+        AdminErrorResponse response = new AdminErrorResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
 

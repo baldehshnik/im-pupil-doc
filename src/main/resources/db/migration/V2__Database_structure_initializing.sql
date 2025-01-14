@@ -51,6 +51,7 @@ CREATE TABLE admin (
                        icon text null,
                        institution_id integer NOT null,
                        user_id integer unique not null,
+                       status integer default -1,
 
                        FOREIGN KEY (institution_id) REFERENCES educational_institution(id)
                            ON UPDATE CASCADE ON DELETE CASCADE,

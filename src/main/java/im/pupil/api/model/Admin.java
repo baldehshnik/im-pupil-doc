@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,11 +15,16 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "admin", schema = "im_pupil", indexes = {
-        @Index(name = "institution_id", columnList = "institution_id")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
-})
+@Table(
+        name = "admin",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "institution_id", columnList = "institution_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_id", columnNames = {"user_id"})
+        }
+)
 public class Admin {
 
     @Id
@@ -49,6 +55,11 @@ public class Admin {
     private String icon;
 
     @NotNull
+    @ColumnDefault("-1")
+    @Column(name = "status", nullable = false)
+    private Integer status;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
@@ -59,6 +70,14 @@ public class Admin {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public @NotNull Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(@NotNull Integer status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;

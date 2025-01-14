@@ -8,3 +8,25 @@ import java.util.List;
 public interface InstitutionEventRepository extends JpaRepository<InstitutionEvent, Integer> {
     List<InstitutionEvent> findByInstitutionId(Integer institutionId);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

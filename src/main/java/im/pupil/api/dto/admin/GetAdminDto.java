@@ -1,22 +1,28 @@
 package im.pupil.api.dto.admin;
 
-public class GetAdminDto {
+import java.io.Serializable;
+
+public class GetAdminDto implements Serializable {
 
     private Integer id;
-
     private String firstname;
-
     private String lastname;
-
     private String patronymic;
-
     private String email;
-
     private Integer accessMode;
-
     private String icon;
 
-    public GetAdminDto(Integer id, String firstname, String lastname, String patronymic, String email, Integer accessMode, String icon) {
+    public GetAdminDto() {}
+
+    public GetAdminDto(
+            Integer id,
+            String firstname,
+            String lastname,
+            String patronymic,
+            String email,
+            Integer accessMode,
+            String icon
+    ) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;

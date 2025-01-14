@@ -14,9 +14,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user", schema = "im_pupil", uniqueConstraints = {
-        @UniqueConstraint(name = "email", columnNames = {"email"})
-})
+@Table(
+        name = "user",
+        schema = "im_pupil",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "email", columnNames = {"email"})
+        }
+)
 public class User {
 
     @Id
@@ -49,7 +53,9 @@ public class User {
         this.userRoles = userRoles;
     }
 
-    public Set<UserRole> getUserRoles() { return userRoles; }
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
 
     public String getEmail() {
         return email;

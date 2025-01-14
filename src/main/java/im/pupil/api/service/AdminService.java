@@ -2,6 +2,7 @@ package im.pupil.api.service;
 
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.admin.GetAdminDto;
+import im.pupil.api.exception.admin.AdminNotConfirmedYetException;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
 import im.pupil.api.model.Admin;
@@ -51,6 +52,32 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
+    public List<GetAdminDto> readNotConfirmedAdmins(
+            String email
+    ) {
+        Admin admin = findAdminByEmail(email);
+        List<Admin> allAdmins = adminRepository.findNotConfirmedAdmins(admin.getInstitution().getId());
+        return allAdmins.stream()
+                .map(m -> modelMapper.map(m, GetAdminDto.class))
+                .toList();
+    }
+
+    @Transactional
+    public void confirmAdminRegistration(
+            String email,
+            Integer id
+    ) {
+        Admin admin = findAdminByEmail(email);
+        Optional<Admin> optionalConfirmAdmin = adminRepository.findById(id);
+        if (optionalConfirmAdmin.isEmpty()) throw new AdminNotFoundException();
+        if (admin.getAccessMode() < 2) throw new NotEnoughAccessException();
+
+        Admin confirmAdmin = optionalConfirmAdmin.get();
+        confirmAdmin.setStatus(1);
+        adminRepository.save(confirmAdmin);
+    }
+
+    @Transactional(readOnly = true)
     public List<GetAdminDto> readAdminsOfEducationInstitution(String email) {
         Admin admin = findAdminByEmail(email);
         List<Admin> allAdmins = adminRepository.findByInstitution_Id(admin.getInstitution().getId());
@@ -86,6 +113,7 @@ public class AdminService {
     public GetAdminDto findAdminById(Integer id) {
         Optional<Admin> optionalAdmin = adminRepository.findById(id);
         if (optionalAdmin.isEmpty()) throw new AdminNotFoundException("No admin found with id: " + id);
+        if (optionalAdmin.get().getStatus() != 1) throw new AdminNotConfirmedYetException();
 
         Admin admin = optionalAdmin.get();
         return new GetAdminDto(
@@ -118,6 +146,7 @@ public class AdminService {
         Admin admin = findAdminByEmail(email);
         Optional<Admin> optionalUpdatingAdmin = adminRepository.findById(updatingAccountId);
         if (optionalUpdatingAdmin.isEmpty()) throw new AdminNotFoundException("No admin found with id: " + updatingAccountId);
+        if (optionalUpdatingAdmin.get().getStatus() != 1) throw new AdminNotConfirmedYetException();
 
         Admin updatingAdmin = optionalUpdatingAdmin.get();
         if (admin.getAccessMode() > updatingAdmin.getAccessMode()) {
@@ -130,21 +159,26 @@ public class AdminService {
 
     private Admin findAdminByUserId(Integer userId) {
         Optional<Admin> admin = adminRepository.findByUserId(userId);
+        if (admin.isEmpty()) throw new AdminNotFoundException("No admin found with userId: " + userId);
+        if (admin.get().getStatus() != 1) throw new AdminNotConfirmedYetException();
 
-        return admin.orElseThrow(() -> new AdminNotFoundException("No admin found with userId: " + userId));
+        return admin.get();
     }
 
     public boolean existsByUserId(Integer userId) {
         return adminRepository.existsByUserId(userId);
     }
 
-    public Admin save(Admin admin) {
-        return adminRepository.save(admin);
-    }
-
     public UserDetails loadAdminUserDetailsByEmail(String email) throws UsernameNotFoundException {
         Admin admin = findAdminByEmail(email);
         return userService.loadUserByUsername(admin.getUser().getEmail());
+    }
+
+    public UserDetails loadAnyAdminUserDetailsByEmail(String email) throws UsernameNotFoundException {
+        Optional<Admin> optionalAdmin = adminRepository.findAdminByEmail(email);
+        if (optionalAdmin.isEmpty()) throw new AdminNotFoundException();
+
+        return userService.loadUserByUsername(optionalAdmin.get().getUser().getEmail());
     }
 
     public AdminDto convertToDto(Admin admin) {
@@ -155,3 +189,18 @@ public class AdminService {
         return modelMapper.map(adminDto, Admin.class);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

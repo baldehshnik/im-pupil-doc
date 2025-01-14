@@ -57,6 +57,10 @@ public class SecurityConfig {
                                 .requestMatchers("/test/**").permitAll()
                                 .requestMatchers("/education/institution/byNamePart").permitAll()
                                 .requestMatchers("/education/practice/search/**").permitAll()
+                                .requestMatchers(
+                                        "/education/event/all",
+                                        "education/event/**"
+                                ).permitAll()
 
                                 .requestMatchers("/admin/**").permitAll()
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")

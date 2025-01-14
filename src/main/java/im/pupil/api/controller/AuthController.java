@@ -12,42 +12,53 @@ import im.pupil.api.service.RefreshTokenService;
 import im.pupil.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
+
     private final AuthenticationService authenticationService;
-    @Autowired
-    private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final RefreshTokenService refreshTokenService;
-    @Autowired
     private final JwtService jwtService;
-    @Autowired
     private final UserService userService;
+
+    public AuthController(
+            AuthenticationService authenticationService,
+            RefreshTokenService refreshTokenService,
+            JwtService jwtService,
+            UserService userService
+    ) {
+        this.authenticationService = authenticationService;
+        this.refreshTokenService = refreshTokenService;
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
 
     @Operation(summary = "Create new account for admin")
     @PostMapping("/admin/sign-up")
-    public JwtAuthenticationResponseDto adminSignUp(@Valid @RequestBody SignUpAdminRequestDto request) {
+    public JwtAuthenticationResponseDto adminSignUp(
+            @Valid @RequestBody SignUpAdminRequestDto request
+    ) {
         return authenticationService.adminSignUp(request);
     }
 
-    @Operation(summary = "Sign-in into account")
-    @PostMapping("/sign-in")
-    public JwtAuthenticationResponseDto signIn(@Valid @RequestBody SignInRequestDto request) {
-        System.out.println("!!!PASSWORD " + passwordEncoder.encode(request.getPassword()) + " PASSWORD!!!");
-        return authenticationService.signIn(request);
+    @Operation(summary = "Sign-in into admin account")
+    @PostMapping("/admin/sign-in")
+    public JwtAuthenticationResponseDto adminSignIn(
+            @Valid @RequestBody SignInRequestDto request
+    ) {
+        return authenticationService.adminSignIn(request);
     }
 
     @Operation(summary = "Get new access token with old refresh token")
     @PostMapping("/refreshToken")
-    public JwtAuthenticationResponseDto refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    public JwtAuthenticationResponseDto refreshToken(
+            @Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto
+    ) {
         return refreshTokenService.findByToken(refreshTokenRequestDto.getToken())
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)

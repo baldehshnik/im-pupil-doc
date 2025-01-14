@@ -1,8 +1,8 @@
 package im.pupil.api.controller;
 
+import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.admin.GetAdminDto;
-import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.role.RoleNotFoundException;
@@ -32,6 +32,23 @@ public class AdminController {
     @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
+    }
+
+    @GetMapping("/notConfirmed")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GetAdminDto> readNotConfirmedAdmins() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return adminService.readNotConfirmedAdmins(email);
+    }
+
+    @PostMapping("/confirm")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> confirmAdmin(
+            @RequestParam("adminId") Integer adminId
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        adminService.confirmAdminRegistration(email, adminId);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success account confirm!"));
     }
 
     @PostMapping("/account/update/access/{adminId}")
@@ -65,7 +82,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the admin account",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminDto.class))
             }
@@ -73,7 +90,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "404",
             description = "Admin account not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminErrorResponse.class))
             }
@@ -88,7 +105,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the admin account",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminDto.class))
             }
@@ -96,7 +113,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "404",
             description = "Admin account not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminErrorResponse.class))
             }
@@ -104,7 +121,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "424",
             description = "Admin account not found, because there is no such user",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = UserErrorResponse.class))
             }
@@ -112,7 +129,7 @@ public class AdminController {
     @ApiResponse(
             responseCode = "409",
             description = "User doesn't have such a role",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = RoleErrorResponse.class))
             }

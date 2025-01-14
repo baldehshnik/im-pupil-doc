@@ -8,10 +8,15 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "institution_event", schema = "im_pupil", indexes = {
-        @Index(name = "institution_id", columnList = "institution_id")
-})
+@Table(
+        name = "institution_event",
+        schema = "im_pupil",
+        indexes = {
+                @Index(name = "institution_id", columnList = "institution_id")
+        }
+)
 public class InstitutionEvent {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
