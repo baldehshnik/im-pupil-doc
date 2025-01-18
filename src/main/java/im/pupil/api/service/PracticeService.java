@@ -1,5 +1,6 @@
 package im.pupil.api.service;
 
+import im.pupil.api.domain.image.storage.ImageWorker;
 import im.pupil.api.dto.information_block.UpdateInformationBlock;
 import im.pupil.api.dto.practice.*;
 import im.pupil.api.dto.relocation.UpdateRelocationDto;
@@ -8,11 +9,15 @@ import im.pupil.api.model.*;
 import im.pupil.api.model.institution.EducationalInstitution;
 import im.pupil.api.repository.PracticeRepository;
 import im.pupil.api.service.auth.AdminService;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,10 +30,11 @@ public class PracticeService {
 
     private final AdminService adminService;
     private final EducationalInstitutionService educationalInstitutionService;
-
-    private final ModelMapper modelMapper;
     private final InformationBlockService informationBlockService;
     private final RelocationService relocationService;
+
+    private final ModelMapper modelMapper;
+    private final ImageWorker imageWorker;
 
     @Autowired
     public PracticeService(
@@ -37,7 +43,8 @@ public class PracticeService {
             InformationBlockService informationBlockService,
             RelocationService relocationService,
             ModelMapper modelMapper,
-            AdminService adminService
+            AdminService adminService,
+            ImageWorker imageWorker
     ) {
         this.practiceRepository = practiceRepository;
         this.educationalInstitutionService = educationalInstitutionService;
@@ -45,6 +52,7 @@ public class PracticeService {
         this.informationBlockService = informationBlockService;
         this.relocationService = relocationService;
         this.adminService = adminService;
+        this.imageWorker = imageWorker;
     }
 
     @Transactional(readOnly = true)
@@ -72,11 +80,16 @@ public class PracticeService {
             String email,
             CreatePracticeDto practiceDto,
             Set<Relocation> relocations,
-            Set<InformationBlock> informationBlocks
-    ) {
+            Set<InformationBlock> informationBlocks,
+            @NotNull MultipartFile image
+    ) throws UnexpectedException {
         Admin admin = adminService.findAdminByEmail(email);
         EducationalInstitution educationalInstitution = educationalInstitutionService.findEducationalInstitutionById(admin.getInstitution().getId());
         Practice practice = convertToEntity(practiceDto);
+
+        String url = imageWorker.saveImage(image, ImageWorker.ImageType.PRACTICE);
+        practice.setIcon(url);
+
         practice.setInstitution(educationalInstitution);
         practiceRepository.save(practice);
 
@@ -93,11 +106,18 @@ public class PracticeService {
             String email,
             UpdatePracticeDto practiceDto,
             Set<UpdateRelocationDto> relocations,
-            Set<UpdateInformationBlock> informationBlocks
-    ) {
+            Set<UpdateInformationBlock> informationBlocks,
+            @Nullable MultipartFile image
+    ) throws UnexpectedException {
         Admin admin = adminService.findAdminByEmail(email);
         EducationalInstitution educationalInstitution = educationalInstitutionService.findEducationalInstitutionById(admin.getInstitution().getId());
         Practice practice = convertToEntity(practiceDto);
+
+        if (image != null && !image.isEmpty()) {
+            String url = imageWorker.saveImage(image, ImageWorker.ImageType.PRACTICE);
+            practice.setIcon(url);
+        }
+
         practice.setInstitution(educationalInstitution);
         practiceRepository.save(practice);
 

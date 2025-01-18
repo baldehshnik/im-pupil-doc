@@ -3,7 +3,6 @@ package im.pupil.api.dto.institution;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class GetEducationalInstitutionDto implements Serializable {
 
@@ -19,13 +18,35 @@ public class GetEducationalInstitutionDto implements Serializable {
     @NotNull
     private Integer type;
 
-    public GetEducationalInstitutionDto(String name, String abbreviation, Integer type) {
+    private String address;
+    private String phone;
+
+    public GetEducationalInstitutionDto(Integer id, String name, String abbreviation, Integer type, String address, String phone) {
+        this.id = id;
         this.name = name;
         this.abbreviation = abbreviation;
         this.type = type;
+        this.address = address;
+        this.phone = phone;
     }
 
     public GetEducationalInstitutionDto() {
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getName() {
@@ -40,27 +61,24 @@ public class GetEducationalInstitutionDto implements Serializable {
         return type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GetEducationalInstitutionDto entity = (GetEducationalInstitutionDto) o;
-        return Objects.equals(this.name, entity.name) &&
-                Objects.equals(this.abbreviation, entity.abbreviation) &&
-                Objects.equals(this.type, entity.type);
+    public @NotNull Integer getId() {
+        return id;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, abbreviation, type);
+    public void setId(@NotNull Integer id) {
+        this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "name = " + name + ", " +
-                "abbreviation = " + abbreviation + ", " +
-                "type = " + type + ")";
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
+
+    public void setAbbreviation(@NotNull String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    public void setType(@NotNull Integer type) {
+        this.type = type;
     }
 }
 

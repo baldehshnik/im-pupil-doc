@@ -26,9 +26,6 @@ public class CreateSectionDto implements Serializable {
     private String description;
 
     @Nullable
-    private String icon;
-
-    @Nullable
     private Integer fromCourse;
 
     @Nullable
@@ -43,7 +40,6 @@ public class CreateSectionDto implements Serializable {
             Boolean price,
             Integer gender,
             @Nullable String description,
-            @Nullable String icon,
             @Nullable Integer fromCourse,
             @Nullable Integer toCourse
     ) {
@@ -52,7 +48,6 @@ public class CreateSectionDto implements Serializable {
         this.price = price;
         this.gender = gender;
         this.description = description;
-        this.icon = icon;
         this.fromCourse = fromCourse;
         this.toCourse = toCourse;
     }
@@ -96,15 +91,6 @@ public class CreateSectionDto implements Serializable {
 
     public void setDescription(@Nullable String description) {
         this.description = description;
-    }
-
-    @Nullable
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(@Nullable String icon) {
-        this.icon = icon;
     }
 
     @Nullable

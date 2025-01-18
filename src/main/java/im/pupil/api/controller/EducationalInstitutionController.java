@@ -3,6 +3,7 @@ package im.pupil.api.controller;
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.institution.EducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
+import im.pupil.api.dto.institution.GetEducationalInstitutionDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
@@ -17,6 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +35,13 @@ public class EducationalInstitutionController {
     public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService) {
         this.educationalInstitutionService = educationalInstitutionService;
         this.educationalInstitutionConverters = educationalInstitutionService.getEducationInstitutionAssociatedConverters();
+    }
+
+    @GetMapping("/ofAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public GetEducationalInstitutionDto readEducationInstitutionOfAdmin() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return educationalInstitutionService.getEducationalInstitutionOfAdmin(email);
     }
 
     @GetMapping("/byNamePart")

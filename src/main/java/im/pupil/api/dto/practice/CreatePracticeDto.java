@@ -13,8 +13,6 @@ import java.util.Set;
 
 public class CreatePracticeDto implements Serializable {
 
-    private String icon;
-
     @NotNull
     private Boolean payAbility = false;
 
@@ -41,7 +39,6 @@ public class CreatePracticeDto implements Serializable {
     private Set<RelocationDto> relocations = new LinkedHashSet<>();
 
     public CreatePracticeDto(
-            String icon,
             Boolean payAbility,
             String description,
             Integer workType,
@@ -50,7 +47,6 @@ public class CreatePracticeDto implements Serializable {
             Set<InformationBlockDto> informationBlocks,
             Set<RelocationDto> relocations
     ) {
-        this.icon = icon;
         this.payAbility = payAbility;
         this.description = description;
         this.workType = workType;
@@ -60,14 +56,7 @@ public class CreatePracticeDto implements Serializable {
         this.relocations = relocations;
     }
 
-    public CreatePracticeDto() {}
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public CreatePracticeDto() {
     }
 
     public @NotNull Boolean getPayAbility() {

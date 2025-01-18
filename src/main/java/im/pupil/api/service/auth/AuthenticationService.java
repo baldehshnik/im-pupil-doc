@@ -90,7 +90,8 @@ public class AuthenticationService {
 
         Optional<Pupil> optionalPupil = pupilRepository.findByEmail(signInRequestDto.getEmail());
         if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
-        if (pupilRepository.findRegisteredById(optionalPupil.get().getId()).isEmpty()) throw new PupilNotConfirmedYetException();
+        if (pupilRepository.findRegisteredById(optionalPupil.get().getId()).isEmpty())
+            throw new PupilNotConfirmedYetException();
 
         UserDetails userDetails = userService.loadUserByUsername(signInRequestDto.getEmail());
         String jwtAccess = jwtService.generateToken(userDetails);
@@ -134,7 +135,8 @@ public class AuthenticationService {
 
         EducationalInstitution educationalInstitution = educationalInstitutionService.findEducationalInstitutionById(addPupilDto.getInstitutionId());
         if (pupilService.existsByUserId(user.getId())) throw new PupilAlreadyRegisteredException();
-        if (pupilService.existsByCodeAndInstitutionId(addPupilDto.getCode(), educationalInstitution.getId())) throw new PupilAlreadyRegisteredException();
+        if (pupilService.existsByCodeAndInstitutionId(addPupilDto.getCode(), educationalInstitution.getId()))
+            throw new PupilAlreadyRegisteredException();
 
         Pupil pupil = new Pupil();
         pupil.setCode(addPupilDto.getCode());

@@ -9,7 +9,6 @@ import im.pupil.api.model.Admin;
 import im.pupil.api.model.User;
 import im.pupil.api.repository.AdminRepository;
 import im.pupil.api.repository.UserRepository;
-import im.pupil.api.security.RolesEnum;
 import im.pupil.api.service.RoleService;
 import im.pupil.api.service.UserRoleService;
 import im.pupil.api.service.UserService;
@@ -102,13 +101,6 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Admin findAdminByEmail(String email) {
         User user = userService.findByEmail(email);
-        Integer idOfRole = roleService.findByRoleName(RolesEnum.ADMIN.getDescription()).getId();
-        boolean isUserHaveAdminRole = userRoleService.existsByUserIdAndRoleId(user.getId(), idOfRole);
-
-        if (!isUserHaveAdminRole) {
-            throw new AdminNotFoundException("No admin found with email: " + email);
-        }
-
         return findAdminByUserId(user.getId());
     }
 
@@ -148,7 +140,8 @@ public class AdminService {
     public void updateAdminAccess(String email, Integer updatingAccountId) {
         Admin admin = findAdminByEmail(email);
         Optional<Admin> optionalUpdatingAdmin = adminRepository.findById(updatingAccountId);
-        if (optionalUpdatingAdmin.isEmpty()) throw new AdminNotFoundException("No admin found with id: " + updatingAccountId);
+        if (optionalUpdatingAdmin.isEmpty())
+            throw new AdminNotFoundException("No admin found with id: " + updatingAccountId);
         if (optionalUpdatingAdmin.get().getStatus() != 1) throw new AdminNotConfirmedYetException();
 
         Admin updatingAdmin = optionalUpdatingAdmin.get();

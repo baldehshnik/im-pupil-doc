@@ -14,12 +14,15 @@ import im.pupil.api.exception.relocation.response.RelocationErrorResponse;
 import im.pupil.api.service.InformationBlockService;
 import im.pupil.api.service.PracticeService;
 import im.pupil.api.service.RelocationService;
+import im.pupil.api.worker.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,15 +44,19 @@ public class PracticeController {
     private final RelocationService relocationService;
     private final InformationBlockService informationBlockService;
 
+    private final JsonParser jsonParser;
+
     @Autowired
     public PracticeController(
             PracticeService practiceService,
             RelocationService relocationService,
-            InformationBlockService informationBlockService
+            InformationBlockService informationBlockService,
+            JsonParser jsonParser
     ) {
         this.practiceService = practiceService;
         this.relocationService = relocationService;
         this.informationBlockService = informationBlockService;
+        this.jsonParser = jsonParser;
     }
 
     @Operation(summary = "Get practice by ID")
@@ -168,38 +177,46 @@ public class PracticeController {
     )
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SuccessAnswer> performPractiseRegistration(
-            @RequestBody @Valid CreatePracticeDto practiceDto,
+    public ResponseEntity<SuccessAnswer> performPracticeRegistration(
+            @RequestPart("practice") String practiceDto,
+            @Valid @NotNull @RequestPart("image") MultipartFile image,
             BindingResult bindingResult
-    ) {
+    ) throws UnexpectedException {
         if (bindingResult.hasErrors()) {
             throw new PracticeNotCreatedException(buildErrorMessageByBindingResult(bindingResult));
         }
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        CreatePracticeDto dto = jsonParser.parseJsonToDto(practiceDto, CreatePracticeDto.class);
         practiceService.createPracticeWithRelocationInformationBlockWithExistingEducationInstitution(
                 email,
-                practiceDto,
-                practiceDto.getRelocations().stream()
-                        .map(relocationService::convertToEntity).collect(Collectors.toSet()),
-                practiceDto.getInformationBlocks().stream()
-                        .map(informationBlockService::convertToEntity).collect(Collectors.toSet())
+                dto,
+                dto.getRelocations().stream()
+                        .map(relocationService::convertToEntity)
+                        .collect(Collectors.toSet()),
+                dto.getInformationBlocks().stream()
+                        .map(informationBlockService::convertToEntity)
+                        .collect(Collectors.toSet()),
+                image
         );
 
-        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer(null));
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success practice creating"));
     }
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SuccessAnswer> performPracticeRegistration(
-            @RequestBody @Valid UpdatePracticeDto practiceDto
-    ) {
+    public ResponseEntity<SuccessAnswer> updatePracticeRegistration(
+            @RequestPart("practice") String practiceDto,
+            @Nullable @RequestPart("image") MultipartFile image
+    ) throws UnexpectedException {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UpdatePracticeDto dto = jsonParser.parseJsonToDto(practiceDto, UpdatePracticeDto.class);
         practiceService.updatePracticeWithRelocationInformationBlockWithExistingEducationInstitution(
                 email,
-                practiceDto,
-                practiceDto.getRelocations(),
-                practiceDto.getInformationBlocks()
+                dto,
+                dto.getRelocations(),
+                dto.getInformationBlocks(),
+                image
         );
 
         return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer(null));

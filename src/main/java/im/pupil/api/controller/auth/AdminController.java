@@ -136,7 +136,7 @@ public class AdminController {
     )
     @GetMapping("/account/search")
     @PreAuthorize("hasRole('ADMIN')")
-    AdminDto getAdminAccountByEmail() {
+    public AdminDto getAdminAccountByEmail() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return adminService.convertToDto(adminService.findAdminByEmail(email));
     }

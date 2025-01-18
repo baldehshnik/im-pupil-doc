@@ -3,6 +3,7 @@ package im.pupil.api.service;
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.institution.EducationalInstitutionDto;
 import im.pupil.api.dto.InstitutionEventDto;
+import im.pupil.api.dto.institution.GetEducationalInstitutionDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.educational.institution.EducationalInstitutionNotFoundException;
 import im.pupil.api.exception.insitution.event.InstitutionEventNotFoundException;
@@ -46,6 +47,14 @@ public class EducationalInstitutionService {
         this.adminRepository = adminRepository;
         this.adminService = adminService;
         this.modelMapper = modelMapper;
+    }
+
+    @Transactional(readOnly = true)
+    public GetEducationalInstitutionDto getEducationalInstitutionOfAdmin(
+            String email
+    ) {
+        Admin admin = adminService.findAdminByEmail(email);
+        return modelMapper.map(admin.getInstitution(), GetEducationalInstitutionDto.class);
     }
 
     public List<EducationalInstitutionDto> getEducationalInstitutionByNamePart(String namePart) {

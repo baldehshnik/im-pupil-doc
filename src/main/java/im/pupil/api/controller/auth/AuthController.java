@@ -13,13 +13,11 @@ import im.pupil.api.service.RefreshTokenService;
 import im.pupil.api.service.UserService;
 import im.pupil.api.service.auth.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,6 +40,12 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/check-token")
+    public ResponseEntity<SuccessAnswer> checkTokenValidation(@RequestHeader("Authorization") String authorizationHeader) {
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success token validation"));
+    }
+
     @Operation(summary = "Create new account for pupil")
     @PostMapping("/pupil/sign-up")
     public ResponseEntity<SuccessAnswer> pupilSignUp(
@@ -60,10 +64,10 @@ public class AuthController {
 
     @Operation(summary = "Create new account for admin")
     @PostMapping("/admin/sign-up")
-    public JwtAuthenticationResponseDto adminSignUp(
+    public ResponseEntity<JwtAuthenticationResponseDto> adminSignUp(
             @Valid @RequestBody SignUpAdminRequestDto request
     ) {
-        return authenticationService.adminSignUp(request);
+        return ResponseEntity.ok(authenticationService.adminSignUp(request));
     }
 
     @Operation(summary = "Sign-in into admin account")

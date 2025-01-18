@@ -61,6 +61,7 @@ public class SecurityConfig {
                                         "/education/event/all",
                                         "education/event/**"
                                 ).permitAll()
+                                .requestMatchers("/news/**").permitAll()
 
                                 .requestMatchers("/admin/**").permitAll()
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")

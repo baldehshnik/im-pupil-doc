@@ -81,7 +81,9 @@ public class ImageWorker {
         ACCOUNT("accounts"),
         ICON("icons"),
         ABOUT("about"),
-        EVENT("event");
+        EVENT("event"),
+        PRACTICE("practice"),
+        SECTION("section");
 
         private final String directoryName;
 
