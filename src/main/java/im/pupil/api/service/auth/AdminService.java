@@ -1,7 +1,9 @@
 package im.pupil.api.service.auth;
 
+import im.pupil.api.domain.image.storage.ImageWorker;
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.admin.GetAdminDto;
+import im.pupil.api.dto.admin.GetAdminImageDto;
 import im.pupil.api.exception.admin.AdminNotConfirmedYetException;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.NotEnoughAccessException;
@@ -18,7 +20,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,10 +35,10 @@ public class AdminService {
 
     private final UserService userService;
     private final UserRoleService userRoleService;
+    private final RoleService roleService;
 
     private final ModelMapper modelMapper;
-
-    private final RoleService roleService;
+    private final ImageWorker imageWorker;
 
     @Autowired
     public AdminService(
@@ -43,7 +47,8 @@ public class AdminService {
             ModelMapper modelMapper,
             UserRoleService userRoleService,
             RoleService roleService,
-            UserRepository userRepository
+            UserRepository userRepository,
+            ImageWorker imageWorker
     ) {
         this.adminRepository = adminRepository;
         this.userService = userService;
@@ -51,6 +56,23 @@ public class AdminService {
         this.userRoleService = userRoleService;
         this.roleService = roleService;
         this.userRepository = userRepository;
+        this.imageWorker = imageWorker;
+    }
+
+    @Transactional
+    public GetAdminImageDto updateAccountIcon(
+            String email,
+            MultipartFile image
+    ) throws UnexpectedException {
+        Admin admin = findAdminByEmail(email);
+        String newUrl = admin.getIcon();
+        if (!image.isEmpty()) {
+            String url = imageWorker.saveImage(image, ImageWorker.ImageType.ACCOUNT);
+            admin.setIcon(url);
+            newUrl = adminRepository.save(admin).getIcon();
+        }
+
+        return new GetAdminImageDto(newUrl);
     }
 
     @Transactional(readOnly = true)

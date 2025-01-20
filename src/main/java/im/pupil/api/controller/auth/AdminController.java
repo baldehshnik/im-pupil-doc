@@ -3,6 +3,7 @@ package im.pupil.api.controller.auth;
 import im.pupil.api.dto.SuccessAnswer;
 import im.pupil.api.dto.admin.AdminDto;
 import im.pupil.api.dto.admin.GetAdminDto;
+import im.pupil.api.dto.admin.GetAdminImageDto;
 import im.pupil.api.exception.admin.AdminNotFoundException;
 import im.pupil.api.exception.admin.response.AdminErrorResponse;
 import im.pupil.api.exception.role.RoleNotFoundException;
@@ -14,13 +15,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.rmi.UnexpectedException;
 import java.util.List;
 
 @RestController
@@ -32,6 +37,15 @@ public class AdminController {
     @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
+    }
+
+    @PostMapping("/icon/change")
+    @PreAuthorize("hasRole('ADMIN')")
+    public GetAdminImageDto changeAdminIcon(
+            @RequestPart("image") @Valid @NotNull MultipartFile image
+    ) throws UnexpectedException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return adminService.updateAccountIcon(email, image);
     }
 
     @GetMapping("/notConfirmed")

@@ -31,6 +31,15 @@ public class InstitutionEventController {
         this.jsonParser = jsonParser;
     }
 
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessAnswer> deleteInstitutionEvent(
+            @PathVariable("id") Integer id
+    ) {
+        institutionEventService.deleteInstitutionEvent(id);
+        return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success event deleting"));
+    }
+
     @GetMapping("/{eventId}")
     public GetInstitutionEventDto readInstitutionEvent(
             @PathVariable Integer eventId

@@ -47,6 +47,16 @@ public class InstitutionEventService {
         this.imageWorker = imageWorker;
     }
 
+    @Transactional
+    public void deleteInstitutionEvent(
+            Integer id
+    ) {
+        Optional<InstitutionEvent> optionalInstitutionEvent = institutionEventRepository.findById(id);
+        if (optionalInstitutionEvent.isEmpty()) throw new InstitutionEventNotFoundException();
+
+        institutionEventRepository.delete(optionalInstitutionEvent.get());
+    }
+
     @Transactional(readOnly = true)
     public GetInstitutionEventDto readInstitutionEvent(
             Integer id
