@@ -242,6 +242,7 @@ CREATE TABLE notification (
                               description text null,
                               date_time timestamp DEFAULT CURRENT_TIMESTAMP NOT null,
                               status boolean DEFAULT false NOT null,
+                              type integer NOT null DEFAULT 0,
                               pupil_id integer null,
                               admin_id integer null,
                               institution_id integer not null,

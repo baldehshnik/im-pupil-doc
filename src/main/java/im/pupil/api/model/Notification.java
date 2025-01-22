@@ -52,6 +52,11 @@ public class Notification {
     @Column(name = "status", nullable = false)
     private Boolean status = false;
 
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "type", nullable = false)
+    private Integer type = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pupil_id")
@@ -140,4 +145,11 @@ public class Notification {
         this.institution = institution;
     }
 
+    public @NotNull Integer getType() {
+        return type;
+    }
+
+    public void setType(@NotNull Integer type) {
+        this.type = type;
+    }
 }

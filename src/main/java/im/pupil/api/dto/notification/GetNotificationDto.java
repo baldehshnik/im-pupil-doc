@@ -11,6 +11,7 @@ public class GetNotificationDto implements Serializable {
     private String description;
     private Instant dateTime;
     private Boolean status;
+    private Integer type;
 
     public GetNotificationDto() {
     }
@@ -21,7 +22,7 @@ public class GetNotificationDto implements Serializable {
             String title,
             String description,
             Instant dateTime,
-            Boolean status
+            Boolean status, Integer type
     ) {
         this.id = id;
         this.icon = icon;
@@ -29,6 +30,7 @@ public class GetNotificationDto implements Serializable {
         this.description = description;
         this.dateTime = dateTime;
         this.status = status;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -77,6 +79,14 @@ public class GetNotificationDto implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }
 

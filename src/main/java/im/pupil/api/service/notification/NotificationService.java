@@ -70,6 +70,7 @@ public class NotificationService {
             notification.setDescription(NotificationMessagesProvider.NEW_ADMIN_DESCRIPTION.getMessage() + lastname + " " + firstname);
             notification.setInstitution(educationalInstitution);
             notification.setDateTime(Instant.now());
+            notification.setType(1);
             notification.setAdmin(m);
             notificationRepository.save(notification);
         });
@@ -88,6 +89,7 @@ public class NotificationService {
             notification.setDescription(NotificationMessagesProvider.NEW_STUDENT_DESCRIPTION.getMessage() + code);
             notification.setInstitution(educationalInstitution);
             notification.setDateTime(Instant.now());
+            notification.setType(2);
             notification.setAdmin(m);
             notificationRepository.save(notification);
         });
