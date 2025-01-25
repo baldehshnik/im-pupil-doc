@@ -82,7 +82,11 @@ public class AdminService {
         Admin admin = findAdminByEmail(email);
         List<Admin> allAdmins = adminRepository.findNotConfirmedAdmins(admin.getInstitution().getId());
         return allAdmins.stream()
-                .map(m -> modelMapper.map(m, GetAdminDto.class))
+                .map(m -> {
+                    GetAdminDto getAdminDto = modelMapper.map(m, GetAdminDto.class);
+                    getAdminDto.setEmail(m.getUser().getEmail());
+                    return getAdminDto;
+                })
                 .toList();
     }
 
