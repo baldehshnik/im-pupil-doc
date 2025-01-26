@@ -43,6 +43,10 @@ public class AboutController {
             String description,
 
             @Nullable
+            @RequestPart("icon")
+            String icon,
+
+            @Nullable
             @RequestPart("image")
             MultipartFile image
     ) throws UnexpectedException {
@@ -56,7 +60,7 @@ public class AboutController {
         }
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        aboutService.updateAboutBlock(email, aboutId, description, image);
+        aboutService.updateAboutBlock(email, aboutId, description, icon, image);
         return ResponseEntity.ok(SuccessAnswer.createSuccessAnswer("Success about block updating!"));
     }
 }

@@ -56,15 +56,19 @@ public class AboutService {
             @NotNull String email,
             @Nullable Integer id,
             @Nullable String description,
+            @Nullable String icon,
             @Nullable MultipartFile image
     ) throws UnexpectedException {
-        if (id == null && description == null && (image == null || image.isEmpty())) return;
+        if (id == null && description == null && icon == null && (image == null || image.isEmpty())) return;
 
         Admin admin = adminService.findAdminByEmail(email);
         EducationalInstitution educationalInstitution = admin.getInstitution();
 
+        System.out.println(description);
+        System.out.println(icon);
+
         String imageUrl;
-        if (image == null || image.isEmpty()) imageUrl = null;
+        if (image == null || image.isEmpty()) imageUrl = icon;
         else imageUrl = imageWorker.saveImage(image, ImageWorker.ImageType.ABOUT);
 
         if (id != null) {
@@ -87,8 +91,13 @@ public class AboutService {
         }
 
         About about = optionalAbout.get();
-        about.setIcon(imageUrl);
-        about.setDescription(description);
+
+        if (imageUrl == null) about.setIcon(null);
+        else about.setIcon(imageUrl.replaceAll("\"", ""));
+
+        if (description == null) about.setDescription(null);
+        else about.setDescription(description.replaceAll("\"", ""));
+
         aboutRepository.save(about);
     }
 
