@@ -2,7 +2,10 @@ package im.pupil.api.service;
 
 import im.pupil.api.dto.group.CreateInstitutionGroupDto;
 import im.pupil.api.dto.group.GetInstitutionGroup;
+import im.pupil.api.dto.group.GetInstitutionGroupWithGroupMembersDto;
 import im.pupil.api.dto.group.UpdateInstitutionGroupDto;
+import im.pupil.api.dto.group_member.GetGroupMemberDto;
+import im.pupil.api.dto.group_member.GetGroupMemberForListDto;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupWasAddedYearlyException;
 import im.pupil.api.exception.speciality.SpecialityNotFoundException;
@@ -63,6 +66,25 @@ public class InstitutionGroupService {
         return institutionGroups.stream()
                 .map(m -> modelMapper.map(m, GetInstitutionGroup.class))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public GetInstitutionGroupWithGroupMembersDto readGroupById(
+            Integer id
+    ) {
+        Optional<InstitutionGroup> institutionGroup = institutionGroupRepository.findById(id);
+        if (institutionGroup.isEmpty()) {
+            throw new InstitutionGroupNotFoundException();
+        }
+
+        List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(institutionGroup.get().getId());
+
+        GetInstitutionGroupWithGroupMembersDto group = modelMapper.map(institutionGroup.get(), GetInstitutionGroupWithGroupMembersDto.class);
+        group.setMembers(groupMembers.stream()
+                .map(m -> modelMapper.map(m, GetGroupMemberForListDto.class))
+                .toList());
+
+        return group;
     }
 
     @Transactional

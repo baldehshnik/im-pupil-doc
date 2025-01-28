@@ -117,6 +117,7 @@ public class GroupMemberService {
         groupMember.setLastname(addGroupMemberDto.getLastname());
         groupMember.setPatronymic(addGroupMemberDto.getPatronymic());
         groupMember.setCode(addGroupMemberDto.getCode());
+        groupMember.setPrefect(false);
 
         Optional<InstitutionGroup> institutionGroup = institutionGroupRepository.findById(groupId);
         if (institutionGroup.isEmpty()) throw new InstitutionGroupNotFoundException();
