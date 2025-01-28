@@ -1,7 +1,6 @@
 package im.pupil.api.controller;
 
 import im.pupil.api.dto.SuccessAnswer;
-import im.pupil.api.dto.group_member.AddGroupMemberDto;
 import im.pupil.api.dto.group_member.CanBeAddedGroupMemberDto;
 import im.pupil.api.dto.group_member.CheckGroupMemberDto;
 import im.pupil.api.dto.group_member.GetGroupMemberDto;

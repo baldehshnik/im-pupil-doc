@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -163,12 +164,20 @@ public class GroupMemberService {
             Integer groupId,
             AddGroupMemberDto groupMemberDto
     ) {
+        Optional<GroupMember> optionalGroupMember = groupMemberRepository.findById(
+                Objects.requireNonNull(groupMemberDto.getId())
+        );
+        if (optionalGroupMember.isEmpty()) {
+            throw new GroupMemberNotFoundException();
+        }
+
         GroupMember groupMember = new GroupMember();
         groupMember.setId(groupMemberDto.getId());
         groupMember.setFirstname(groupMemberDto.getFirstname());
         groupMember.setLastname(groupMemberDto.getLastname());
         groupMember.setPatronymic(groupMemberDto.getPatronymic());
         groupMember.setCode(groupMemberDto.getCode());
+        groupMember.setPrefect(optionalGroupMember.get().getPrefect());
 
         Optional<InstitutionGroup> institutionGroup = institutionGroupRepository.findById(groupId);
         if (institutionGroup.isEmpty()) throw new InstitutionGroupNotFoundException();
