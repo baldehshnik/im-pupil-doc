@@ -5,6 +5,7 @@ import im.pupil.api.dto.lesson.GetLessonDto;
 import im.pupil.api.dto.lesson.GetLessonWithPassStatusDto;
 import im.pupil.api.dto.schedule.CreateNewScheduleDto;
 import im.pupil.api.dto.schedule.GetScheduleDto;
+import im.pupil.api.dto.schedule.GetScheduleWithLessonsDto;
 import im.pupil.api.dto.schedule.UpdateScheduleDto;
 import im.pupil.api.service.schedule.ScheduleService;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,14 @@ public class ScheduleController {
 
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
+    }
+
+    @GetMapping("/withLessons")
+    @PreAuthorize("hasRole('ADMIN')")
+    public GetScheduleWithLessonsDto readScheduleWithLessons(
+            @RequestParam("id") Integer id
+    ) {
+        return scheduleService.readScheduleWithLessons(id);
     }
 
     @GetMapping("/withPasses")

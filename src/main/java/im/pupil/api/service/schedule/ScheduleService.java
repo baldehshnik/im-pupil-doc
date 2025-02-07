@@ -5,6 +5,7 @@ import im.pupil.api.dto.lesson.GetLessonWithPassStatusDto;
 import im.pupil.api.dto.lesson.GetPassDto;
 import im.pupil.api.dto.schedule.CreateNewScheduleDto;
 import im.pupil.api.dto.schedule.GetScheduleDto;
+import im.pupil.api.dto.schedule.GetScheduleWithLessonsDto;
 import im.pupil.api.dto.schedule.UpdateScheduleDto;
 import im.pupil.api.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.exception.institution_group.InstitutionGroupNotFoundException;
@@ -70,6 +71,26 @@ public class ScheduleService {
         this.scheduleValidator = scheduleValidator;
         this.localDateConverter = localDateConverter;
         this.localTimeConverter = localTimeConverter;
+    }
+
+    @Transactional(readOnly = true)
+    public GetScheduleWithLessonsDto readScheduleWithLessons(
+            Integer id
+    ) {
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+        if (optionalSchedule.isEmpty()) throw new ScheduleNotFoundException();
+
+        List<Lesson> lessons = lessonRepository.findAllLessonsByScheduleId(id);
+
+        GetScheduleWithLessonsDto getScheduleWithLessonsDto = modelMapper.map(
+                optionalSchedule.get(), GetScheduleWithLessonsDto.class
+        );
+        List<GetLessonDto> lessonDtos = lessons.stream()
+                .map(m -> modelMapper.map(m, GetLessonDto.class))
+                .toList();
+
+        getScheduleWithLessonsDto.setLessons(lessonDtos);
+        return getScheduleWithLessonsDto;
     }
 
     @Transactional(readOnly = true)

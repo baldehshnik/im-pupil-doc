@@ -49,6 +49,16 @@ public class ExamService {
         deleteExamsDto.getIds().forEach(examRepository::deleteById);
     }
 
+    @Transactional(readOnly = true)
+    public GetExamDto readExamById(
+            Integer id
+    ) {
+        Optional<Exam> optionalExam = examRepository.findById(id);
+        if (optionalExam.isEmpty()) throw new ExamNotFoundException();
+
+        return modelMapper.map(optionalExam.get(), GetExamDto.class);
+    }
+
     @Transactional
     public List<GetExamDto> readExams(
             Integer groupId,

@@ -31,7 +31,14 @@ public class ExamController {
         return examService.readExams(groupId, date);
     }
 
-    @DeleteMapping
+    @GetMapping("/{id}")
+    public GetExamDto readExamById(
+            @PathVariable Integer id
+    ) {
+        return examService.readExamById(id);
+    }
+
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SuccessAnswer> deleteExams(
             @RequestBody DeleteExamsDto examsIds
