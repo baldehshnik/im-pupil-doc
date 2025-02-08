@@ -1,5 +1,11 @@
 package im.pupil.api.domain.service.schedule;
 
+import im.pupil.api.data.entity.Pupil;
+import im.pupil.api.data.entity.group.GroupMember;
+import im.pupil.api.data.entity.group.InstitutionGroup;
+import im.pupil.api.data.entity.schedule.Lesson;
+import im.pupil.api.data.entity.schedule.Pass;
+import im.pupil.api.data.entity.schedule.Schedule;
 import im.pupil.api.data.repository.*;
 import im.pupil.api.domain.dto.lesson.GetLessonDto;
 import im.pupil.api.domain.dto.lesson.GetLessonWithPassStatusDto;
@@ -8,14 +14,12 @@ import im.pupil.api.domain.dto.schedule.CreateNewScheduleDto;
 import im.pupil.api.domain.dto.schedule.GetScheduleDto;
 import im.pupil.api.domain.dto.schedule.GetScheduleWithLessonsDto;
 import im.pupil.api.domain.dto.schedule.UpdateScheduleDto;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
 import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import im.pupil.api.domain.exception.schedule.ScheduleNotFoundException;
-import im.pupil.api.data.entity.group.GroupMember;
-import im.pupil.api.data.entity.group.InstitutionGroup;
-import im.pupil.api.data.entity.schedule.Lesson;
-import im.pupil.api.data.entity.schedule.Pass;
-import im.pupil.api.data.entity.schedule.Schedule;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +38,7 @@ public class ScheduleService {
     private final LessonRepository lessonRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final PassRepository passRepository;
+    private final PupilRepository pupilRepository;
 
     private final LessonService lessonService;
 
@@ -51,6 +56,7 @@ public class ScheduleService {
             LessonRepository lessonRepository,
             GroupMemberRepository groupMemberRepository,
             PassRepository passRepository,
+            PupilRepository pupilRepository,
             LessonService lessonService,
             ModelMapper modelMapper,
             LessonMapper lessonMapper,
@@ -64,6 +70,7 @@ public class ScheduleService {
         this.lessonRepository = lessonRepository;
         this.groupMemberRepository = groupMemberRepository;
         this.passRepository = passRepository;
+        this.pupilRepository = pupilRepository;
         this.lessonService = lessonService;
         this.modelMapper = modelMapper;
         this.lessonMapper = lessonMapper;
@@ -148,6 +155,50 @@ public class ScheduleService {
                 ).stream()
                 .map(lessonMapper::mapToDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetLessonDto> readCurrentScheduleForPupil(String email, LocalDate currentDate) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            return readCurrentSchedule(groupMember.getGroup().getId(), currentDate);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetScheduleDto> readSchedulesForPupil(
+            String email
+    ) throws PupilNotFoundException, PupilAreNotConnectedToAnyGroupsException, UnexpectedException {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            return readSchedulesByGroupId(groupMember.getGroup().getId());
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)

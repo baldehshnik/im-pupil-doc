@@ -1,20 +1,15 @@
-package im.pupil.api.presentation.controller;
+package im.pupil.api.presentation.practice;
 
 import im.pupil.api.domain.dto.SuccessAnswer;
 import im.pupil.api.domain.dto.practice.*;
 import im.pupil.api.domain.exception.educational.institution.EducationalInstitutionNotFoundException;
 import im.pupil.api.domain.exception.educational.institution.response.EducationalInstitutionErrorResponse;
-import im.pupil.api.domain.exception.information.block.InformationBlockAlreadyExistsException;
-import im.pupil.api.domain.exception.information.block.response.InformationBlockErrorResponse;
 import im.pupil.api.domain.exception.practice.PracticeNotCreatedException;
-import im.pupil.api.domain.exception.practice.PracticeNotFoundException;
 import im.pupil.api.domain.exception.practice.response.PracticeErrorResponse;
-import im.pupil.api.domain.exception.relocation.RelocationAlreadyExistsException;
-import im.pupil.api.domain.exception.relocation.response.RelocationErrorResponse;
+import im.pupil.api.domain.parser.JsonParser;
 import im.pupil.api.domain.service.InformationBlockService;
 import im.pupil.api.domain.service.PracticeService;
 import im.pupil.api.domain.service.RelocationService;
-import im.pupil.api.domain.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +18,6 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,7 +40,6 @@ public class PracticeController {
 
     private final JsonParser jsonParser;
 
-    @Autowired
     public PracticeController(
             PracticeService practiceService,
             RelocationService relocationService,
@@ -78,7 +71,7 @@ public class PracticeController {
     )
     @GetMapping("/search/{id}")
     public GetPracticeDto getPracticeWithPracticeId(@PathVariable Integer id) {
-        return practiceService.convertToPracticeDto(practiceService.findPracticeById(id));
+        return practiceService.findPracticeById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -118,13 +111,6 @@ public class PracticeController {
         return practiceService.findPracticesByInstitutionId(institutionId).stream()
                 .map(practiceService::convertToListDto)
                 .collect(Collectors.toList());
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<PracticeErrorResponse> handlePracticeNotFoundException(PracticeNotFoundException exception) {
-        PracticeErrorResponse practiceErrorResponse = new PracticeErrorResponse(exception.getMessage());
-
-        return new ResponseEntity<>(practiceErrorResponse, HttpStatus.NOT_FOUND);
     }
 
     @Operation(summary = "Create new practice",
@@ -231,35 +217,11 @@ public class PracticeController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<PracticeErrorResponse> handlePracticeNotCreatedException(
-            PracticeNotCreatedException exception) {
-        PracticeErrorResponse errorResponse = new PracticeErrorResponse(exception.getMessage());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     private ResponseEntity<PracticeErrorResponse> handleConstraintViolationException(
             ConstraintViolationException exception) {
         PracticeErrorResponse errorResponse = new PracticeErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<RelocationErrorResponse> handleRelocationAlreadyExistsException(
-            RelocationAlreadyExistsException exception) {
-        RelocationErrorResponse errorResponse = new RelocationErrorResponse(exception.getMessage());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<InformationBlockErrorResponse> handleRelocationAlreadyExistsException(
-            InformationBlockAlreadyExistsException exception) {
-        InformationBlockErrorResponse errorResponse = new InformationBlockErrorResponse(exception.getMessage());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     private String buildErrorMessageByBindingResult(BindingResult bindingResult) {

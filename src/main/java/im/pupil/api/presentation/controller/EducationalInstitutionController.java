@@ -1,8 +1,8 @@
 package im.pupil.api.presentation.controller;
 
+import im.pupil.api.domain.dto.InstitutionEventDto;
 import im.pupil.api.domain.dto.admin.AdminDto;
 import im.pupil.api.domain.dto.institution.EducationalInstitutionDto;
-import im.pupil.api.domain.dto.InstitutionEventDto;
 import im.pupil.api.domain.dto.institution.GetEducationalInstitutionDto;
 import im.pupil.api.domain.exception.admin.AdminNotFoundException;
 import im.pupil.api.domain.exception.admin.response.AdminErrorResponse;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,10 +27,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/education/institution")
 public class EducationalInstitutionController {
+
     private final EducationalInstitutionService educationalInstitutionService;
     private final EducationalInstitutionService.EducationInstitutionAssociatedConverters educationalInstitutionConverters;
 
-    @Autowired
     public EducationalInstitutionController(EducationalInstitutionService educationalInstitutionService) {
         this.educationalInstitutionService = educationalInstitutionService;
         this.educationalInstitutionConverters = educationalInstitutionService.getEducationInstitutionAssociatedConverters();
@@ -55,7 +54,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the list of institution events",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
             }
@@ -63,15 +62,15 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "404",
             description = "Institution events not found",
-            content = { @Content (
-                mediaType = "application/json",
-                schema = @Schema(implementation = InstitutionEventErrorResponse.class))
+            content = {@Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InstitutionEventErrorResponse.class))
             }
     )
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for event finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
@@ -89,7 +88,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the list of institution events",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
             }
@@ -97,7 +96,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "404",
             description = "Institution events not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = InstitutionEventErrorResponse.class))
             }
@@ -105,7 +104,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for event finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
@@ -123,7 +122,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the list of institution events",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = InstitutionEventDto.class, type = "array"))
             }
@@ -131,7 +130,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "404",
             description = "Institution events not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = InstitutionEventErrorResponse.class))
             }
@@ -139,7 +138,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for event finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
@@ -157,7 +156,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "200",
             description = "Found the list of admins",
-            content = { @Content(
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminDto.class, type = "array"))
             }
@@ -165,7 +164,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "404",
             description = "Admins not found",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AdminErrorResponse.class))
             }
@@ -173,7 +172,7 @@ public class EducationalInstitutionController {
     @ApiResponse(
             responseCode = "424",
             description = "Education institution, which is used for admin finding, not existing",
-            content = { @Content (
+            content = {@Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = EducationalInstitutionErrorResponse.class))
             }
@@ -188,7 +187,7 @@ public class EducationalInstitutionController {
 
     @ExceptionHandler
     private ResponseEntity<InstitutionEventErrorResponse> handleNotFoundInstitutionEventException(
-            InstitutionEventNotFoundException exception){
+            InstitutionEventNotFoundException exception) {
         InstitutionEventErrorResponse errorResponse = new InstitutionEventErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -196,7 +195,7 @@ public class EducationalInstitutionController {
 
     @ExceptionHandler
     private ResponseEntity<EducationalInstitutionErrorResponse> handleNotFoundEducationInstitutionException(
-            EducationalInstitutionNotFoundException exception){
+            EducationalInstitutionNotFoundException exception) {
         EducationalInstitutionErrorResponse errorResponse = new EducationalInstitutionErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.FAILED_DEPENDENCY);
@@ -204,7 +203,7 @@ public class EducationalInstitutionController {
 
     @ExceptionHandler
     private ResponseEntity<AdminErrorResponse> handleNotFoundAdminException(
-            AdminNotFoundException exception){
+            AdminNotFoundException exception) {
         AdminErrorResponse errorResponse = new AdminErrorResponse(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);

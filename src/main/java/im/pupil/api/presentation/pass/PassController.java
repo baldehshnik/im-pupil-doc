@@ -1,4 +1,4 @@
-package im.pupil.api.presentation.controller;
+package im.pupil.api.presentation.pass;
 
 import im.pupil.api.domain.dto.lesson.GetFullPassDto;
 import im.pupil.api.domain.dto.lesson.GetFullPassWithGroupMemberDto;
@@ -24,7 +24,7 @@ public class PassController {
     }
 
     @GetMapping("/week")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GetWeekDayPassDto> readWeekStatistics(
             @RequestParam("groupMemberId") Integer groupMemberId,
             @RequestParam("date") LocalDate date
@@ -33,7 +33,7 @@ public class PassController {
     }
 
     @GetMapping("/month")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GetFullPassDto> readMonthStatistics(
             @RequestParam("groupMemberId") Integer groupMemberId,
             @RequestParam("date") LocalDate date
@@ -42,7 +42,7 @@ public class PassController {
     }
 
     @GetMapping("/semester")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GetFullPassDto> readPassesByDates(
             @RequestParam("groupMemberId") Integer groupMemberId
     ) {
@@ -50,7 +50,7 @@ public class PassController {
     }
 
     @GetMapping("/group/week")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GetFullPassWithGroupMemberDto> readPassesOfGroupByWeek(
             @RequestParam("groupId") Integer groupId,
             @RequestParam("date") LocalDate date
@@ -59,7 +59,7 @@ public class PassController {
     }
 
     @GetMapping("/group/month")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GetFullPassWithGroupMemberDto> readPassesOfGroupByMonth(
             @RequestParam("groupId") Integer groupId,
             @RequestParam("date") LocalDate date

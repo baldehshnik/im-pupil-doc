@@ -113,7 +113,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             PreAuthorize preAuthorize = handlerMethod.getMethodAnnotation(PreAuthorize.class);
             if (preAuthorize != null) {
                 String value = preAuthorize.value();
-                if (value.contains("hasRole('ADMIN')")) {
+                if (value.contains("hasAnyRole")) {
+                    if (value.contains("ADMIN")) {
+                        return RolesEnum.ADMIN.getDescription();
+                    }
+                    if (value.contains("USER")) {
+                        return RolesEnum.USER.getDescription();
+                    }
+                } else if (value.contains("hasRole('ADMIN')")) {
                     return RolesEnum.ADMIN.getDescription();
                 } else if (value.contains("hasRole('USER')")) {
                     return RolesEnum.USER.getDescription();
@@ -122,7 +129,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }
 
 

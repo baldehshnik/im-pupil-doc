@@ -1,25 +1,28 @@
 package im.pupil.api.domain.service.event;
 
-import im.pupil.api.domain.image.storage.ImageWorker;
-import im.pupil.api.domain.dto.event.AddInstitutionEventDto;
-import im.pupil.api.domain.dto.event.GetInstitutionEventDto;
-import im.pupil.api.domain.dto.event.UpdateInstitutionEventDto;
-import im.pupil.api.domain.exception.admin.AdminNotFoundException;
-import im.pupil.api.domain.exception.educational.institution.EducationalInstitutionNotFoundException;
-import im.pupil.api.domain.exception.event.InstitutionEventNotFoundException;
 import im.pupil.api.data.entity.Admin;
 import im.pupil.api.data.entity.InstitutionEvent;
+import im.pupil.api.data.entity.Pupil;
 import im.pupil.api.data.entity.institution.EducationalInstitution;
 import im.pupil.api.data.repository.AdminRepository;
 import im.pupil.api.data.repository.EducationalInstitutionRepository;
 import im.pupil.api.data.repository.InstitutionEventRepository;
+import im.pupil.api.data.repository.PupilRepository;
+import im.pupil.api.domain.dto.event.AddInstitutionEventDto;
+import im.pupil.api.domain.dto.event.GetInstitutionEventDto;
+import im.pupil.api.domain.dto.event.UpdateInstitutionEventDto;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.admin.AdminNotFoundException;
+import im.pupil.api.domain.exception.educational.institution.EducationalInstitutionNotFoundException;
+import im.pupil.api.domain.exception.event.InstitutionEventNotFoundException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
+import im.pupil.api.domain.image.storage.ImageWorker;
 import jakarta.annotation.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,7 @@ public class InstitutionEventService {
 
     private final InstitutionEventRepository institutionEventRepository;
     private final AdminRepository adminRepository;
+    private final PupilRepository pupilRepository;
     private final EducationalInstitutionRepository educationalInstitutionRepository;
 
     private final ModelMapper modelMapper;
@@ -36,15 +40,37 @@ public class InstitutionEventService {
     public InstitutionEventService(
             InstitutionEventRepository institutionEventRepository,
             AdminRepository adminRepository,
+            PupilRepository pupilRepository,
             EducationalInstitutionRepository educationalInstitutionRepository,
             ModelMapper modelMapper,
             ImageWorker imageWorker
     ) {
         this.institutionEventRepository = institutionEventRepository;
         this.adminRepository = adminRepository;
+        this.pupilRepository = pupilRepository;
         this.educationalInstitutionRepository = educationalInstitutionRepository;
         this.modelMapper = modelMapper;
         this.imageWorker = imageWorker;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetInstitutionEventDto> readInstitutionEventForPupil(
+            String email
+    ) throws PupilNotFoundException, UnexpectedException {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            List<InstitutionEvent> institutionEvents = institutionEventRepository.findByInstitutionId(pupil.getInstitution().getId());
+            return institutionEvents.stream()
+                    .map(m -> modelMapper.map(m, GetInstitutionEventDto.class))
+                    .toList();
+        } catch (PupilNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional

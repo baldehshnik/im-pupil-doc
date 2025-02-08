@@ -1,5 +1,6 @@
 package im.pupil.api.domain.image.storage;
 
+import im.pupil.api.domain.exception.UnexpectedException;
 import im.pupil.api.domain.exception.storage.FailedStorageConnectionException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.UnexpectedException;
 import java.util.UUID;
 
 @Component
@@ -67,7 +67,7 @@ public class ImageWorker {
         } catch (IOException e) {
             throw new FailedStorageConnectionException();
         } catch (Exception e) {
-            throw new UnexpectedException("Unexpected storage exception", e);
+            throw new UnexpectedException("Unexpected storage exception");
         }
     }
 

@@ -1,11 +1,16 @@
 package im.pupil.api.domain.service.schedule;
 
+import im.pupil.api.data.entity.Pupil;
 import im.pupil.api.data.repository.*;
 import im.pupil.api.domain.dto.group_member.EducationPlaceDto;
 import im.pupil.api.domain.dto.group_member.GetGroupMemberDto;
 import im.pupil.api.domain.dto.lesson.*;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.admin.NotEnoughAccessException;
+import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
 import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import im.pupil.api.domain.exception.schedule.GroupMemberAlreadyHasAPassException;
 import im.pupil.api.domain.exception.schedule.LessonNotFoundException;
 import im.pupil.api.domain.exception.schedule.ScheduleNotFoundException;
@@ -37,6 +42,7 @@ public class LessonService {
     private final InstitutionGroupRepository institutionGroupRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final PassRepository passRepository;
+    private final PupilRepository pupilRepository;
 
     private final ModelMapper modelMapper;
 
@@ -48,6 +54,7 @@ public class LessonService {
             InstitutionGroupRepository institutionGroupRepository,
             GroupMemberRepository groupMemberRepository,
             PassRepository passRepository,
+            PupilRepository pupilRepository,
             ModelMapper modelMapper,
             LocalTimeConverter localTimeConverter
     ) {
@@ -56,8 +63,32 @@ public class LessonService {
         this.institutionGroupRepository = institutionGroupRepository;
         this.groupMemberRepository = groupMemberRepository;
         this.passRepository = passRepository;
+        this.pupilRepository = pupilRepository;
         this.modelMapper = modelMapper;
         this.localTimeConverter = localTimeConverter;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetGroupMemberWithPass> readGroupMembersWithPassStatus(
+            String email, Integer lessonId, LocalDate date
+    ) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            return readGroupMembersWithPassStatus(groupMember.getGroup().getId(), lessonId, date);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -172,6 +203,32 @@ public class LessonService {
 
     @Transactional
     public void updatePassesStatus(
+            String email,
+            UpdatePassesStatusDto updatePassesStatusDto
+    ) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            if (groupMember.getPrefect()) throw new NotEnoughAccessException();
+
+            updatePassesStatus(updatePassesStatusDto);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional
+    public void updatePassesStatus(
             UpdatePassesStatusDto updatePassesStatusDto
     ) {
         Optional<Lesson> optionalLesson = lessonRepository.findById(updatePassesStatusDto.getLessonId());
@@ -205,6 +262,32 @@ public class LessonService {
             pass.setLesson(optionalLesson.get());
             pass.setDate(instant);
             passRepository.save(pass);
+        }
+    }
+
+    @Transactional
+    public void updatePassStatusByPrefect(
+            String email,
+            UpdatePassStatusDto updatePassStatusDto
+    ) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            if (groupMember.getPrefect()) throw new NotEnoughAccessException();
+
+            updatePassStatus(updatePassStatusDto);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
         }
     }
 

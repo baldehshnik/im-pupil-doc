@@ -1,12 +1,16 @@
 package im.pupil.api.domain.service.auth;
 
-import im.pupil.api.domain.dto.pupil.GetPupilDto;
-import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import im.pupil.api.data.entity.Pupil;
 import im.pupil.api.data.entity.group.GroupMember;
 import im.pupil.api.data.repository.GroupMemberRepository;
 import im.pupil.api.data.repository.PupilRepository;
-import im.pupil.api.domain.service.UserService;
+import im.pupil.api.domain.dto.group.GroupInfoDto;
+import im.pupil.api.domain.dto.pupil.GetPupilDto;
+import im.pupil.api.domain.dto.pupil.OnlyPupilDto;
+import im.pupil.api.domain.dto.pupil.ReadPupilAccountDto;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,21 +25,58 @@ public class PupilService {
     private final PupilRepository pupilRepository;
     private final GroupMemberRepository groupMemberRepository;
 
-    private final UserService userService;
-
     private final ModelMapper modelMapper;
 
     public PupilService(
             PupilRepository pupilRepository,
             GroupMemberRepository groupMemberRepository,
-            UserService userService,
             ModelMapper modelMapper
     ) {
         this.pupilRepository = pupilRepository;
         this.groupMemberRepository = groupMemberRepository;
-        this.userService = userService;
         this.modelMapper = modelMapper;
-        ;
+    }
+
+    @Transactional(readOnly = true)
+    public ReadPupilAccountDto readPupilAccount(String email) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) return null;
+
+            GroupMember groupMember = optionalGroupMember.get();
+            ReadPupilAccountDto readPupilAccountDto = new ReadPupilAccountDto();
+            readPupilAccountDto.setId(pupil.getId());
+            readPupilAccountDto.setFirstname(groupMember.getFirstname());
+            readPupilAccountDto.setLastname(groupMember.getLastname());
+            readPupilAccountDto.setPatronymic(groupMember.getPatronymic());
+            readPupilAccountDto.setPrefect(groupMember.getPrefect());
+            readPupilAccountDto.setCode(groupMember.getCode());
+            readPupilAccountDto.setPupil(modelMapper.map(pupil, OnlyPupilDto.class));
+
+            List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(groupMember.getGroup().getId());
+            GroupInfoDto groupInfoDto = new GroupInfoDto(
+                    groupMember.getGroup().getSpeciality().getFaculty().getInstitution().getAbbreviation(),
+                    groupMember.getGroup().getSpeciality().getFaculty().getInstitution().getName(),
+                    groupMember.getGroup().getSpeciality().getFaculty().getInstitution().getAddress(),
+                    groupMember.getGroup().getSpeciality().getFaculty().getInstitution().getPhone(),
+                    groupMember.getGroup().getSpeciality().getName(),
+                    groupMember.getGroup().getName(),
+                    groupMembers.size()
+            );
+
+            readPupilAccountDto.setGroupInfo(groupInfoDto);
+            return readPupilAccountDto;
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)

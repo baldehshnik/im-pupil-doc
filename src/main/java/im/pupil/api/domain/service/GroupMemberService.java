@@ -1,9 +1,5 @@
 package im.pupil.api.domain.service;
 
-import im.pupil.api.domain.dto.group_member.*;
-import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
-import im.pupil.api.domain.exception.institution_group.GroupMemberWasAddedYearlyException;
-import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
 import im.pupil.api.data.entity.Pupil;
 import im.pupil.api.data.entity.group.GroupMember;
 import im.pupil.api.data.entity.group.InstitutionGroup;
@@ -13,6 +9,14 @@ import im.pupil.api.data.entity.institution.Speciality;
 import im.pupil.api.data.repository.GroupMemberRepository;
 import im.pupil.api.data.repository.InstitutionGroupRepository;
 import im.pupil.api.data.repository.PupilRepository;
+import im.pupil.api.domain.dto.group_member.*;
+import im.pupil.api.domain.dto.pupil.OnlyPupilDto;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
+import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
+import im.pupil.api.domain.exception.institution_group.GroupMemberWasAddedYearlyException;
+import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,11 +81,45 @@ public class GroupMemberService {
 
     @Transactional(readOnly = true)
     public List<GetGroupMemberDto> readGroupMembers(
+            String email
+    ) throws PupilNotFoundException, PupilAreNotConnectedToAnyGroupsException, UnexpectedException {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(groupMember.getGroup().getId());
+            return groupMembers.stream()
+                    .map(m -> {
+                        GetGroupMemberDto model = modelMapper.map(m, GetGroupMemberDto.class);
+                        model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                        return model;
+                    })
+                    .toList();
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetGroupMemberDto> readGroupMembers(
             Integer groupId
     ) {
         List<GroupMember> groupMembers = groupMemberRepository.readGroupMembers(groupId);
         return groupMembers.stream()
-                .map(m -> modelMapper.map(m, GetGroupMemberDto.class))
+                .map(m -> {
+                    GetGroupMemberDto model = modelMapper.map(m, GetGroupMemberDto.class);
+                    model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                    return model;
+                })
                 .toList();
     }
 
@@ -102,7 +140,8 @@ public class GroupMemberService {
                 institutionGroup.getName()
         );
 
-        GetGroupMemberDto getGroupMemberDto = modelMapper.map(groupMember, GetGroupMemberDto.class);
+        GetGroupMemberDto getGroupMemberDto = modelMapper.map(groupMember.get(), GetGroupMemberDto.class);
+        getGroupMemberDto.setPupil(modelMapper.map(groupMember.get().getPupil(), OnlyPupilDto.class));
         getGroupMemberDto.setEducationPlaceDto(educationPlaceDto);
 
         return getGroupMemberDto;

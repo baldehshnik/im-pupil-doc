@@ -1,4 +1,4 @@
-package im.pupil.api.presentation.controller;
+package im.pupil.api.presentation.schedule;
 
 import im.pupil.api.domain.dto.SuccessAnswer;
 import im.pupil.api.domain.dto.lesson.GetLessonDto;

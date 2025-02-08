@@ -1,29 +1,27 @@
 package im.pupil.api.domain.service;
 
-import im.pupil.api.data.entity.Admin;
-import im.pupil.api.data.entity.InformationBlock;
-import im.pupil.api.data.entity.Practice;
-import im.pupil.api.data.entity.Relocation;
+import im.pupil.api.data.entity.*;
+import im.pupil.api.data.entity.institution.EducationalInstitution;
+import im.pupil.api.data.repository.PracticeRepository;
+import im.pupil.api.data.repository.PupilRepository;
+import im.pupil.api.domain.dto.information_block.UpdateInformationBlock;
 import im.pupil.api.domain.dto.practice.CreatePracticeDto;
 import im.pupil.api.domain.dto.practice.GetListPracticeDto;
 import im.pupil.api.domain.dto.practice.GetPracticeDto;
 import im.pupil.api.domain.dto.practice.UpdatePracticeDto;
-import im.pupil.api.domain.image.storage.ImageWorker;
-import im.pupil.api.domain.dto.information_block.UpdateInformationBlock;
 import im.pupil.api.domain.dto.relocation.UpdateRelocationDto;
+import im.pupil.api.domain.exception.UnexpectedException;
 import im.pupil.api.domain.exception.practice.PracticeNotFoundException;
-import im.pupil.api.data.entity.institution.EducationalInstitution;
-import im.pupil.api.data.repository.PracticeRepository;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
+import im.pupil.api.domain.image.storage.ImageWorker;
 import im.pupil.api.domain.service.auth.AdminService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +31,7 @@ import java.util.Set;
 public class PracticeService {
 
     private final PracticeRepository practiceRepository;
+    private final PupilRepository pupilRepository;
 
     private final AdminService adminService;
     private final EducationalInstitutionService educationalInstitutionService;
@@ -40,11 +39,12 @@ public class PracticeService {
     private final RelocationService relocationService;
 
     private final ModelMapper modelMapper;
+
     private final ImageWorker imageWorker;
 
-    @Autowired
     public PracticeService(
             PracticeRepository practiceRepository,
+            PupilRepository pupilRepository,
             EducationalInstitutionService educationalInstitutionService,
             InformationBlockService informationBlockService,
             RelocationService relocationService,
@@ -53,6 +53,7 @@ public class PracticeService {
             ImageWorker imageWorker
     ) {
         this.practiceRepository = practiceRepository;
+        this.pupilRepository = pupilRepository;
         this.educationalInstitutionService = educationalInstitutionService;
         this.modelMapper = modelMapper;
         this.informationBlockService = informationBlockService;
@@ -62,9 +63,30 @@ public class PracticeService {
     }
 
     @Transactional(readOnly = true)
-    public Practice findPracticeById(Integer id) {
+    public List<GetListPracticeDto> readPracticeListFoPupil(
+            String email
+    ) throws UnexpectedException {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            List<Practice> practices = practiceRepository.findByInstitution_Id(pupil.getInstitution().getId());
+            return practices.stream()
+                    .map(m -> modelMapper.map(m, GetListPracticeDto.class))
+                    .toList();
+        } catch (PupilNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public GetPracticeDto findPracticeById(Integer id) {
         Optional<Practice> practice = practiceRepository.findById(id);
-        return practice.orElseThrow(() -> new PracticeNotFoundException("Practice not found with id: " + id));
+        return practice.map(m -> modelMapper.map(m, GetPracticeDto.class))
+                .orElseThrow(() -> new PracticeNotFoundException("Practice not found with id: " + id));
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-package im.pupil.api.presentation.controller.auth;
+package im.pupil.api.presentation.auth;
 
 import im.pupil.api.domain.exception.security.sign.up.admin.AdminAlreadyRegisteredException;
 import im.pupil.api.domain.exception.security.sign.up.admin.response.AdminAuthErrorResponse;

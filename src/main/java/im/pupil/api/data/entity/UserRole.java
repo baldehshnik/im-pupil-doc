@@ -9,6 +9,7 @@ import jakarta.persistence.*;
         @UniqueConstraint(name = "user_id", columnNames = {"user_id", "role_id"})
 })
 public class UserRole {
+
     @EmbeddedId
     private UserRoleId id;
 

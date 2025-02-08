@@ -69,7 +69,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/admin/**").permitAll()
 
-
+                        .requestMatchers("/education/schedule/lesson/passes/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/pupil/notConfirmed", "/pupil/confirm/**").hasRole("ADMIN")
                         .requestMatchers("/pupil/**").hasRole("USER")
                         .anyRequest().authenticated()

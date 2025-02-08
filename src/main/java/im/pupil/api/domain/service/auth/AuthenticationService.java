@@ -19,7 +19,6 @@ import im.pupil.api.presentation.security.model.RolesEnum;
 import im.pupil.api.presentation.security.model.JwtAuthenticationResponseDto;
 import im.pupil.api.presentation.security.model.SignInRequestDto;
 import im.pupil.api.presentation.security.model.SignUpAdminRequestDto;
-import im.pupil.api.service.*;
 import im.pupil.api.domain.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

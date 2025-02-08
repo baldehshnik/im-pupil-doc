@@ -1,10 +1,12 @@
-package im.pupil.api.domain.dto.group_member;
+package im.pupil.api.domain.dto.pupil;
 
-import im.pupil.api.domain.dto.pupil.OnlyPupilDto;
+import im.pupil.api.domain.annotation.GetterMethod;
+import im.pupil.api.domain.annotation.SetterMethod;
+import im.pupil.api.domain.dto.group.GroupInfoDto;
 
 import java.io.Serializable;
 
-public class GetGroupMemberDto implements Serializable {
+public class ReadPupilAccountDto implements Serializable {
 
     private Integer id;
     private String firstname;
@@ -13,12 +15,12 @@ public class GetGroupMemberDto implements Serializable {
     private Boolean isPrefect;
     private String code;
     private OnlyPupilDto pupil;
-    private EducationPlaceDto educationPlaceDto;
+    private GroupInfoDto groupInfo;
 
-    public GetGroupMemberDto() {
+    public ReadPupilAccountDto() {
     }
 
-    public GetGroupMemberDto(
+    public ReadPupilAccountDto(
             Integer id,
             String firstname,
             String lastname,
@@ -26,7 +28,7 @@ public class GetGroupMemberDto implements Serializable {
             Boolean isPrefect,
             String code,
             OnlyPupilDto pupil,
-            EducationPlaceDto educationPlaceDto
+            GroupInfoDto groupInfo
     ) {
         this.id = id;
         this.firstname = firstname;
@@ -35,73 +37,92 @@ public class GetGroupMemberDto implements Serializable {
         this.isPrefect = isPrefect;
         this.code = code;
         this.pupil = pupil;
-        this.educationPlaceDto = educationPlaceDto;
+        this.groupInfo = groupInfo;
     }
 
+    @GetterMethod
     public Integer getId() {
         return id;
     }
 
+    @SetterMethod
     public void setId(Integer id) {
         this.id = id;
     }
 
+    @GetterMethod
     public String getFirstname() {
         return firstname;
     }
 
+    @SetterMethod
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
+    @GetterMethod
     public String getLastname() {
         return lastname;
     }
 
+    @SetterMethod
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
+    @GetterMethod
     public String getPatronymic() {
         return patronymic;
     }
 
+    @SetterMethod
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public OnlyPupilDto getPupil() {
-        return pupil;
-    }
-
-    public void setPupil(OnlyPupilDto pupil) {
-        this.pupil = pupil;
-    }
-
+    @GetterMethod
     public Boolean getPrefect() {
         return isPrefect;
     }
 
+    @SetterMethod
     public void setPrefect(Boolean prefect) {
         isPrefect = prefect;
     }
 
-    public EducationPlaceDto getEducationPlaceDto() {
-        return educationPlaceDto;
+    @GetterMethod
+    public String getCode() {
+        return code;
     }
 
-    public void setEducationPlaceDto(EducationPlaceDto educationPlaceDto) {
-        this.educationPlaceDto = educationPlaceDto;
+    @SetterMethod
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    @GetterMethod
+    public OnlyPupilDto getPupil() {
+        return pupil;
+    }
+
+    @SetterMethod
+    public void setPupil(OnlyPupilDto pupil) {
+        this.pupil = pupil;
+    }
+
+    @GetterMethod
+    public GroupInfoDto getGroupInfo() {
+        return groupInfo;
+    }
+
+    @SetterMethod
+    public void setGroupInfo(GroupInfoDto groupInfo) {
+        this.groupInfo = groupInfo;
     }
 }
+
+
+
 
 
 
