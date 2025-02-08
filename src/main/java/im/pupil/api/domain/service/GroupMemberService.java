@@ -98,7 +98,8 @@ public class GroupMemberService {
             return groupMembers.stream()
                     .map(m -> {
                         GetGroupMemberDto model = modelMapper.map(m, GetGroupMemberDto.class);
-                        model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                        if (m.getPupil() != null) model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                        else model.setPupil(null);
                         return model;
                     })
                     .toList();
@@ -117,7 +118,8 @@ public class GroupMemberService {
         return groupMembers.stream()
                 .map(m -> {
                     GetGroupMemberDto model = modelMapper.map(m, GetGroupMemberDto.class);
-                    model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                    if (m.getPupil() != null) model.setPupil(modelMapper.map(m.getPupil(), OnlyPupilDto.class));
+                    else model.setPupil(null);
                     return model;
                 })
                 .toList();
@@ -141,7 +143,11 @@ public class GroupMemberService {
         );
 
         GetGroupMemberDto getGroupMemberDto = modelMapper.map(groupMember.get(), GetGroupMemberDto.class);
-        getGroupMemberDto.setPupil(modelMapper.map(groupMember.get().getPupil(), OnlyPupilDto.class));
+        if (groupMember.get().getPupil() != null) {
+            getGroupMemberDto.setPupil(modelMapper.map(groupMember.get().getPupil(), OnlyPupilDto.class));
+        } else {
+            getGroupMemberDto.setPupil(null);
+        }
         getGroupMemberDto.setEducationPlaceDto(educationPlaceDto);
 
         return getGroupMemberDto;
