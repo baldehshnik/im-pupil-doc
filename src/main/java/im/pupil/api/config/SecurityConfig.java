@@ -1,9 +1,7 @@
 package im.pupil.api.config;
 
-import im.pupil.api.security.JwtAuthenticationFilter;
-import im.pupil.api.service.auth.AdminService;
-import im.pupil.api.service.UserService;
-import lombok.RequiredArgsConstructor;
+import im.pupil.api.presentation.security.JwtAuthenticationFilter;
+import im.pupil.api.domain.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,12 +25,18 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AdminService adminService;
     private final UserService userService;
+
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            UserService userService
+    ) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -47,26 +51,28 @@ public class SecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(request -> request
-                                .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/swagger-ui/**",
-                                        "/swagger-resources/**",
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui.html",
-                                        "/webjars/**",
-                                        "/actuator/**").permitAll()
-                                .requestMatchers("/test/**").permitAll()
-                                .requestMatchers("/education/institution/byNamePart").permitAll()
-                                .requestMatchers("/education/practice/search/**").permitAll()
-                                .requestMatchers(
-                                        "/education/event/all",
-                                        "education/event/**"
-                                ).permitAll()
-                                .requestMatchers("/news/**").permitAll()
+                        .requestMatchers("/auth/check-token").authenticated()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                "/actuator/**"
+                        ).permitAll()
+                        .requestMatchers("/test/**").permitAll()
+                        .requestMatchers("/education/institution/byNamePart").permitAll()
+                        .requestMatchers("/education/practice/search/**").permitAll()
+                        .requestMatchers("/education/event/all", "education/event/**").permitAll()
+                        .requestMatchers("/news/**").permitAll()
 
-                                .requestMatchers("/admin/**").permitAll()
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").permitAll()
 
-                                .anyRequest().authenticated()
+
+                        .requestMatchers("/pupil/notConfirmed", "/pupil/confirm/**").hasRole("ADMIN")
+                        .requestMatchers("/pupil/**").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
@@ -88,8 +94,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

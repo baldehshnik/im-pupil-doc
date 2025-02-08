@@ -1,6 +1,6 @@
 package im.pupil.api.domain.image.storage;
 
-import im.pupil.api.exception.storage.FailedStorageConnectionException;
+import im.pupil.api.domain.exception.storage.FailedStorageConnectionException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
@@ -33,10 +33,6 @@ public class ImageWorker {
         this.supabaseKey = supabaseKey;
         this.bucketName = bucketName;
         this.directoryProvider = new ImageDirectoryProvider(ImageUtils.UPLOAD_DIRECTORY);
-    }
-
-    public String getEmptyAccountIconUrl() {
-        return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + ImageUtils.EMPTY_ACCOUNT_ICON_NAME;
     }
 
     public String saveImage(
