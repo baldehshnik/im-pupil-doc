@@ -44,7 +44,7 @@ jobs:
                       }
                   }
 
-                  scriptPath('/docker/Jenkinsfile.groovy')
+                  scriptPath('Jenkinsfile.groovy')
               }
           }
       }
