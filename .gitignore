@@ -35,3 +35,37 @@ startup.bat
 
 #Ignoring target folder
 /target
+
+# Ignoring .env for Jenkins and Docker
+/docker/.env
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,64 @@
+jenkins:
+    securityRealm:
+        local:
+            allowsSignup: false
+            users:
+                - id: "${JENKINS_ADMIN_ID}"
+                  password: "${JENKINS_ADMIN_PASSWORD}"
+
+    projectNamingStrategy:
+        roleBased:
+            forceExistingJobs: true
+
+    authorizationStrategy:
+        roleBased:
+            roles:
+                global:
+                    - name: "Admin"
+                      description: "Jenkins administrators"
+                      pattern: ".*"
+                      permissions:
+                          - "Overall/Administer"
+                          - "Job/Create"
+                          - "Job/Read"
+                          - "Job/Build"
+                          - "Job/Cancel"
+                          - "Job/Delete"
+                          - "View/Configure"
+                          - "View/Create"
+                      entries:
+                          - user: "${JENKINS_ADMIN_ID}"
+
+jobs:
+  - script: >
+      pipelineJob('I am pupil API') {
+          definition {
+              cpsScm {
+                  scm {
+                      git {
+                          remote {
+                              url('https://github.com/baldehshnik/im-pupil-doc.git')
+                          }
+
+                          branch('main')
+                      }
+                  }
+
+                  scriptPath('/docker/Jenkinsfile.groovy')
+              }
+          }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,12 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * DTO for {@link EducationalInstitution}
  */
 public class EducationalInstitutionDto implements Serializable {
+
+    private Integer id;
 
     @NotNull
     @NotEmpty(message = "Educational institution name should be not empty")
@@ -28,13 +29,35 @@ public class EducationalInstitutionDto implements Serializable {
     @NotNull
     private Integer type;
 
-    public EducationalInstitutionDto(String name, String abbreviation, Integer type) {
+    public EducationalInstitutionDto(Integer id, String name, String abbreviation, Integer type) {
+        this.id = id;
         this.name = name;
         this.abbreviation = abbreviation;
         this.type = type;
     }
 
-    public EducationalInstitutionDto() {}
+    public EducationalInstitutionDto() {
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(@NotNull @NotEmpty(message = "Educational institution name should be not empty") @NotBlank(message = "Educational institution name should be not blank") String name) {
+        this.name = name;
+    }
+
+    public void setAbbreviation(@NotNull @Size(max = 10) @NotEmpty(message = "Educational institution abbreviation should be not empty") @NotBlank(message = "Educational institution abbreviation should be not blank") String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    public void setType(@NotNull Integer type) {
+        this.type = type;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -46,28 +69,5 @@ public class EducationalInstitutionDto implements Serializable {
 
     public Integer getType() {
         return type;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EducationalInstitutionDto entity = (EducationalInstitutionDto) o;
-        return Objects.equals(this.name, entity.name) &&
-                Objects.equals(this.abbreviation, entity.abbreviation) &&
-                Objects.equals(this.type, entity.type);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, abbreviation, type);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "name = " + name + ", " +
-                "abbreviation = " + abbreviation + ", " +
-                "type = " + type + ")";
     }
 }

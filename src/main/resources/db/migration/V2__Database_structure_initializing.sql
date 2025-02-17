@@ -8,6 +8,14 @@ CREATE TABLE educational_institution (
 );
 
 
+CREATE TABLE services (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) UNIQUE NOT NULL,
+    image_path TEXT UNIQUE NOT NULL,
+    position INT NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    destination INT NOT NULL
+);
 
 
 CREATE TABLE user (
