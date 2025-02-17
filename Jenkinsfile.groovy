@@ -5,7 +5,10 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean install'
+                    env.LOAD_DOTENV = true
+                    load '${WORKSPACE}/.env'
+
+                    sh './mvnw clean spring-boot:run'
                 }
             }
         }

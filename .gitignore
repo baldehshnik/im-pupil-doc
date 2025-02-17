@@ -38,6 +38,7 @@ startup.bat
 
 # Ignoring .env for Jenkins and Docker
 /docker/.env
+.env
 
 
 
