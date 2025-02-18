@@ -10,8 +10,6 @@
 /.properties
 #Ignoring .idea directory
 .idea/
-#Ignoring mvn directory
-.mvn/
 #Ignoring licence file
 HELP.md
 #Ignoring database directory that was created by docker
