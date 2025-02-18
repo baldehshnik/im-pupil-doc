@@ -29,6 +29,61 @@ jenkins:
                       entries:
                           - user: "${JENKINS_ADMIN_ID}"
 
+credentials:
+    system:
+        domainCredentials:
+            - credentials:
+                  - string:
+                        scope: GLOBAL
+                        id: "database-url"
+                        secret: "${DATABASE_URL}"
+                        description: "Database URL"
+                  - string:
+                        scope: GLOBAL
+                        id: "database-user"
+                        secret: "${DATABASE_USER}"
+                        description: "Database User"
+                  - string:
+                        scope: GLOBAL
+                        id: "database-password"
+                        secret: "${DATABASE_PASSWORD}"
+                        description: "Database Password"
+                  - string:
+                        scope: GLOBAL
+                        id: "server-url"
+                        secret: "${SERVER_URL}"
+                        description: "Server URL"
+                  - string:
+                        scope: GLOBAL
+                        id: "server-port"
+                        secret: "${SERVER_PORT}"
+                        description: "Server Port"
+                  - string:
+                        scope: GLOBAL
+                        id: "refresh-token-expiration-date"
+                        secret: "${REFRESH_TOKEN_EXPIRATION_DATE}"
+                        description: "Refresh Token Expiration Date"
+                  - string:
+                        scope: GLOBAL
+                        id: "json-token-signing-key"
+                        secret: "${JSON_TOKEN_SIGNING_KEY}"
+                        description: "JSON Token Signing Key"
+                  - string:
+                        scope: GLOBAL
+                        id: "s3-endpoint-url"
+                        secret: "${S3_ENDPOINT_URL}"
+                        description: "S3 Endpoint URL"
+                  - string:
+                        scope: GLOBAL
+                        id: "s3-access-key"
+                        secret: "${S3_ACCESS_KEY}"
+                        description: "S3 Access Key"
+                  - string:
+                        scope: GLOBAL
+                        id: "s3-bucket-name"
+                        secret: "${S3_BUCKET_NAME}"
+                        description: "S3 Bucket Name"
+
 jobs:
   - script: >
       pipelineJob('I am pupil API') {
