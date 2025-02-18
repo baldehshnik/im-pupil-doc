@@ -16,8 +16,6 @@ HELP.md
 mariadb-data/
 #Ignoring env file for docker use
 pupil.env
-#Ignoring application,properies file
-src/main/resources/application.properties
 
 #Ignoring file for db initing
 util/
