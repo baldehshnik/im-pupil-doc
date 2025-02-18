@@ -1,4 +1,15 @@
 services:
+  db:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    command: --init-file /docker-entrypoint-initdb.d/init_db.sql
+
   jenkins:
     build:
       context: .
@@ -24,3 +35,4 @@ services:
 
 volumes:
   jenkins_home:
+  db_data:

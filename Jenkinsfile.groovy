@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean spring-boot:run'
+                sh './mvnw clean compile'
             }
         }
     }

@@ -36,6 +36,8 @@ startup.bat
 /docker/.env
 .env
 
+/docker/init_db.sql
+
 
 
 
