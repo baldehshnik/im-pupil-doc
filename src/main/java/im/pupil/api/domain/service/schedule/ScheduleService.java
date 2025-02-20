@@ -15,6 +15,7 @@ import im.pupil.api.domain.dto.schedule.GetScheduleDto;
 import im.pupil.api.domain.dto.schedule.GetScheduleWithLessonsDto;
 import im.pupil.api.domain.dto.schedule.UpdateScheduleDto;
 import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.admin.NotEnoughAccessException;
 import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
 import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
@@ -98,6 +99,33 @@ public class ScheduleService {
 
         getScheduleWithLessonsDto.setLessons(lessonDtos);
         return getScheduleWithLessonsDto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetLessonWithPassStatusDto> readLessonsWithPassStatusByPrefect(
+            String email,
+            Integer groupMemberId,
+            LocalDate date
+    ) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            if (!groupMember.getPrefect()) throw new NotEnoughAccessException();
+
+            return readLessonsWithPassStatus(groupMemberId, date);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)

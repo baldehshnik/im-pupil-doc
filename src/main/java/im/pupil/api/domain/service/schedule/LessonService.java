@@ -217,7 +217,7 @@ public class LessonService {
             if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
 
             GroupMember groupMember = optionalGroupMember.get();
-            if (groupMember.getPrefect()) throw new NotEnoughAccessException();
+            if (!groupMember.getPrefect()) throw new NotEnoughAccessException();
 
             updatePassesStatus(updatePassesStatusDto);
         } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {
@@ -281,7 +281,7 @@ public class LessonService {
             if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
 
             GroupMember groupMember = optionalGroupMember.get();
-            if (groupMember.getPrefect()) throw new NotEnoughAccessException();
+            if (!groupMember.getPrefect()) throw new NotEnoughAccessException();
 
             updatePassStatus(updatePassStatusDto);
         } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {

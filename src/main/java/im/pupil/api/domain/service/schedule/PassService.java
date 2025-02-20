@@ -1,21 +1,23 @@
 package im.pupil.api.domain.service.schedule;
 
+import im.pupil.api.data.entity.Pupil;
+import im.pupil.api.data.repository.*;
 import im.pupil.api.domain.dto.group_member.GetGroupMemberPersonalInfoDto;
 import im.pupil.api.domain.dto.lesson.GetFullPassDto;
 import im.pupil.api.domain.dto.lesson.GetFullPassWithGroupMemberDto;
 import im.pupil.api.domain.dto.lesson.GetLessonDto;
 import im.pupil.api.domain.dto.lesson.GetWeekDayPassDto;
+import im.pupil.api.domain.exception.UnexpectedException;
+import im.pupil.api.domain.exception.admin.NotEnoughAccessException;
+import im.pupil.api.domain.exception.exam.PupilAreNotConnectedToAnyGroupsException;
 import im.pupil.api.domain.exception.institution_group.GroupMemberNotFoundException;
 import im.pupil.api.domain.exception.institution_group.InstitutionGroupNotFoundException;
+import im.pupil.api.domain.exception.pupil.PupilNotFoundException;
 import im.pupil.api.domain.exception.schedule.ScheduleNotFoundException;
 import im.pupil.api.data.entity.group.GroupMember;
 import im.pupil.api.data.entity.group.InstitutionGroup;
 import im.pupil.api.data.entity.schedule.Pass;
 import im.pupil.api.data.entity.schedule.Schedule;
-import im.pupil.api.data.repository.GroupMemberRepository;
-import im.pupil.api.data.repository.InstitutionGroupRepository;
-import im.pupil.api.data.repository.PassRepository;
-import im.pupil.api.data.repository.ScheduleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ public class PassService {
     private final GroupMemberRepository groupMemberRepository;
     private final ScheduleRepository scheduleRepository;
     private final InstitutionGroupRepository institutionGroupRepository;
+    private final PupilRepository pupilRepository;
 
     private final ModelMapper modelMapper;
     private final LocalDateConverter localDateConverter;
@@ -46,6 +49,7 @@ public class PassService {
             GroupMemberRepository groupMemberRepository,
             ScheduleRepository scheduleRepository,
             InstitutionGroupRepository institutionGroupRepository,
+            PupilRepository pupilRepository,
             ModelMapper modelMapper,
             LocalDateConverter localDateConverter
     ) {
@@ -53,6 +57,7 @@ public class PassService {
         this.groupMemberRepository = groupMemberRepository;
         this.scheduleRepository = scheduleRepository;
         this.institutionGroupRepository = institutionGroupRepository;
+        this.pupilRepository = pupilRepository;
         this.modelMapper = modelMapper;
         this.localDateConverter = localDateConverter;
     }
@@ -200,6 +205,32 @@ public class PassService {
         }
 
         return getFullPassWithGroupMemberDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetFullPassWithGroupMemberDto> readPassesOfGroupPerMonthByPrefect(
+            String email,
+            LocalDate date
+    ) {
+        try {
+            Optional<Pupil> optionalPupil = pupilRepository.findByEmail(email);
+            if (optionalPupil.isEmpty()) throw new PupilNotFoundException();
+
+            Pupil pupil = optionalPupil.get();
+            Optional<GroupMember> optionalGroupMember = groupMemberRepository.readGroupMemberOfInstitutionByCode(
+                    pupil.getCode(), pupil.getInstitution().getId()
+            );
+            if (optionalGroupMember.isEmpty()) throw new PupilAreNotConnectedToAnyGroupsException();
+
+            GroupMember groupMember = optionalGroupMember.get();
+            if (!groupMember.getPrefect()) throw new NotEnoughAccessException();
+
+            return readPassesOfGroupByMonth(groupMember.getGroup().getId(), date);
+        } catch (PupilNotFoundException | PupilAreNotConnectedToAnyGroupsException | NotEnoughAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)

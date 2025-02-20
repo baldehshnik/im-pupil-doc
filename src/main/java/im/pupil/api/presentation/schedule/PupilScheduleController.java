@@ -1,6 +1,7 @@
 package im.pupil.api.presentation.schedule;
 
 import im.pupil.api.domain.dto.lesson.GetLessonDto;
+import im.pupil.api.domain.dto.lesson.GetLessonWithPassStatusDto;
 import im.pupil.api.domain.dto.schedule.GetScheduleDto;
 import im.pupil.api.domain.dto.schedule.GetScheduleWithLessonsDto;
 import im.pupil.api.domain.service.schedule.ScheduleService;
@@ -22,6 +23,16 @@ public class PupilScheduleController {
 
     public PupilScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
+    }
+
+    @GetMapping("/withPasses")
+    @PreAuthorize("hasRole('USER')")
+    public List<GetLessonWithPassStatusDto> readLessonsWithPassStatus(
+            @RequestParam("groupMemberId") Integer groupMemberId,
+            @RequestParam("date") LocalDate date
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return scheduleService.readLessonsWithPassStatusByPrefect(email, groupMemberId, date);
     }
 
     @GetMapping
