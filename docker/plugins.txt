@@ -21,3 +21,4 @@ authorize-project:latest
 job-dsl:latest
 role-strategy:latest
 envinject:latest
+email-ext:latest

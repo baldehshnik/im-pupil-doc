@@ -83,6 +83,11 @@ credentials:
                         id: "s3-bucket-name"
                         secret: "${S3_BUCKET_NAME}"
                         description: "S3 Bucket Name"
+                  - string:
+                        scope: GLOBAL
+                        id: "jenkins-admin-email"
+                        secret: "${JENKINS_ADMIN_EMAIL}"
+                        description: "Jenkins Admin Email"
 
 jobs:
   - script: >
