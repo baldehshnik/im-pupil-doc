@@ -6,6 +6,8 @@ jenkins:
                 - id: "${JENKINS_ADMIN_ID}"
                   password: "${JENKINS_ADMIN_PASSWORD}"
 
+
+
     projectNamingStrategy:
         roleBased:
             forceExistingJobs: true
@@ -109,7 +111,31 @@ jobs:
           }
       }
 
+unclassified:
+  mailer:
+    authentication:
+      password: "${JENKINS_SENDER_PASSWORD}"
+      username: "${JENKINS_SENDER_EMAIL}"
+    charset: "UTF-8"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
 
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultContentType: "text/plain"
+    mailAccount:
+      smtpHost: "smtp.gmail.com"
+      smtpPort: "465"
+      smtpUsername: "${JENKINS_SENDER_EMAIL}"
+      smtpPassword: "${JENKINS_SENDER_PASSWORD}"
+      useSsl: true
+      useTls: false
+      useOAuth2: false
 
 
 
