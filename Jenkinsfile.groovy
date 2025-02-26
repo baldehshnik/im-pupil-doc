@@ -22,6 +22,17 @@ pipeline {
                 sh './mvnw clean compile'
             }
         }
+
+        stage('Test') {
+            environment {
+                DATABASE_URL = credentials('test-database-url')
+            }
+
+            steps {
+                sh 'chmod +x ./mvnw'
+                sh './mvnw test'
+            }
+        }
     }
 
     post {

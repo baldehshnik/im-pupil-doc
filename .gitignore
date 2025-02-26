@@ -25,6 +25,7 @@ build.sh
 count.sh
 startup.sh
 startup.bat
+tests.bat
 
 #Ignoring db migrations package
 /src/main/resources/db/migration/

@@ -11,13 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface EducationalInstitutionRepository extends JpaRepository<EducationalInstitution, Integer> {
+
     Optional<EducationalInstitution> findByName(String name);
     Optional<EducationalInstitution> findByAbbreviation(String abbreviation);
 
     @Query(value = "SELECT * FROM educational_institution WHERE name LIKE %:namePart% LIMIT 8", nativeQuery = true)
     List<EducationalInstitution> findTop8ByNameContaining(@Param("namePart") String namePart);
-
-
 }
 
 

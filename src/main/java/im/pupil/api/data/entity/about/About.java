@@ -3,9 +3,13 @@ package im.pupil.api.data.entity.about;
 import im.pupil.api.data.entity.institution.EducationalInstitution;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@Getter
+@Setter
 @Entity
 @Table(
         name = "about",
@@ -32,38 +36,6 @@ public class About {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "institution_id", nullable = false)
     private EducationalInstitution institution;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public @NotNull EducationalInstitution getInstitution() {
-        return institution;
-    }
-
-    public void setInstitution(@NotNull EducationalInstitution institution) {
-        this.institution = institution;
-    }
 }
 
 

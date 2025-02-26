@@ -90,6 +90,12 @@ credentials:
                         id: "jenkins-admin-email"
                         secret: "${JENKINS_ADMIN_EMAIL}"
                         description: "Jenkins Admin Email"
+                  - string:
+                        scope: GLOBAL
+                        id: "test-database-url"
+                        secret: "${TEST_DATABASE_URL}"
+                        description: "Test Database Url"
+
 
 jobs:
   - script: >
