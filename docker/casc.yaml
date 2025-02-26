@@ -110,6 +110,9 @@ jobs:
               }
           }
       }
+      triggers {
+          scm('* * * * *')
+      }
 
 unclassified:
   mailer:
